@@ -1,9 +1,12 @@
 package com.music.common.common;
 
 import com.music.common.MusicommunityApplication;
+import com.music.common.common.thread.MyUncaughtExceptionHandler;
 import com.music.common.common.utils.JwtUtils;
 import com.music.common.common.utils.RedisUtils;
 import com.music.common.user.service.LoginService;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.juli.logging.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.redisson.api.RLock;
@@ -15,6 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @SpringBootTest(classes = MusicommunityApplication.class)
 @RunWith(SpringRunner.class)
+@Slf4j
 public class test {
 
     @Autowired
@@ -55,5 +59,18 @@ public class test {
         String token = loginService.login(11001L);
         System.out.println(token);
         System.out.println(loginService.getValidUid(token));
+    }
+
+    @Test
+    public void thread() throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            if (1 == 1) {
+                log.error("123");
+                throw new RuntimeException("123");
+            }
+        });
+        thread.setUncaughtExceptionHandler(new MyUncaughtExceptionHandler());
+        thread.start();
+        Thread.sleep(200);
     }
 }
