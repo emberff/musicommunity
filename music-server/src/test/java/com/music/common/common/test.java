@@ -3,6 +3,7 @@ package com.music.common.common;
 import com.music.common.MusicommunityApplication;
 import com.music.common.common.utils.JwtUtils;
 import com.music.common.common.utils.RedisUtils;
+import com.music.common.user.service.LoginService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.redisson.api.RLock;
@@ -45,5 +46,14 @@ public class test {
         lock.lock();
         System.out.println();
         lock.unlock();
+    }
+
+    @Autowired
+    private LoginService loginService;
+    @Test
+    public void token(){
+        String token = loginService.login(11001L);
+        System.out.println(token);
+        System.out.println(loginService.getValidUid(token));
     }
 }
