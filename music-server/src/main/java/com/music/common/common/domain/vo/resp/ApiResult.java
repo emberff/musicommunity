@@ -1,4 +1,4 @@
-package com.music.common.user.common.domain.vo.resp;
+package com.music.common.common.domain.vo.resp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.ApiModel;

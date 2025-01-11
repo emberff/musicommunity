@@ -1,4 +1,4 @@
-package com.music.common.user.common.domain.vo.req;
+package com.music.common.common.domain.vo.req;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.ApiModel;

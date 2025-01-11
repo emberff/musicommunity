@@ -1,4 +1,4 @@
-package com.music.common.user.common.domain.enums;
+package com.music.common.common.domain.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

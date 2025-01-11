@@ -1,4 +1,4 @@
-package com.music.common.user.common.config;
+package com.music.common.common.config;
 
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;

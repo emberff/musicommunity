@@ -1,4 +1,4 @@
-package com.music.common.user.common.domain.vo.resp;
+package com.music.common.common.domain.vo.resp;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.fasterxml.jackson.annotation.JsonIgnore;
