@@ -1,6 +1,7 @@
 package com.music.common.common.domain.vo.resp;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.music.common.common.exception.ErrorEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -45,13 +46,13 @@ public class ApiResult<T> {
         return result;
     }
 
-//    public static <T> ApiResult<T> fail(ErrorEnum error) {
-//        ApiResult<T> result = new ApiResult<T>();
-//        result.setSuccess(Boolean.FALSE);
-//        result.setErrorCode(error.getErrorCode());
-//        result.setErrorMsg(error.getErrorMsg());
-//        return result;
-//    }
+    public static <T> ApiResult<T> fail(ErrorEnum error) {
+        ApiResult<T> result = new ApiResult<T>();
+        result.setSuccess(Boolean.FALSE);
+        result.setErrorCode(error.getErrorCode());
+        result.setErrorMsg(error.getErrorMsg());
+        return result;
+    }
 
     public boolean isSuccess() {
         return this.success;
