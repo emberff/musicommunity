@@ -41,16 +41,10 @@ public class UserController {
     }
 
     @GetMapping("/userInfo")
-    @FrequencyControl(time = 30, count = 3, target = FrequencyControl.Target.UID)
+//    @FrequencyControl(time = 30, count = 3, target = FrequencyControl.Target.UID)
     public ApiResult<Object> getUserInfo() {
         Long uid = RequestHolder.get().getUid();
         UserInfoResp userInfo = userService.getUserInfo(uid);
-//        String ip = RequestHolder.get().getIp();
-//        Long uid = RequestHolder.get().getUid();
-//        // 将 ip 和 uid 存入 Map
-//        Map<String, Object> data = new HashMap<>();
-//        data.put("ip", ip);
-//        data.put("uid", uid);
         return ApiResult.success(userInfo);
     }
 }
