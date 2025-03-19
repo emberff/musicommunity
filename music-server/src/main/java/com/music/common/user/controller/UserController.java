@@ -1,5 +1,6 @@
 package com.music.common.user.controller;
 
+import com.music.common.common.annotation.FrequencyControl;
 import com.music.common.common.domain.vo.resp.ApiResult;
 import com.music.common.common.utils.RequestHolder;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
@@ -33,19 +34,23 @@ public class UserController {
     /**
      * 用户登录接口（手机号）
      */
+
     @GetMapping("/public/login")
     public ApiResult<UserLoginResp> login(@RequestParam String phone) {
         return ApiResult.success(userService.login(phone));
     }
 
     @GetMapping("/userInfo")
+    @FrequencyControl(time = 30, count = 3, target = FrequencyControl.Target.UID)
     public ApiResult<Object> getUserInfo() {
-        String ip = RequestHolder.get().getIp();
         Long uid = RequestHolder.get().getUid();
-        // 将 ip 和 uid 存入 Map
-        Map<String, Object> data = new HashMap<>();
-        data.put("ip", ip);
-        data.put("uid", uid);
-        return ApiResult.success(data);
+        UserInfoResp userInfo = userService.getUserInfo(uid);
+//        String ip = RequestHolder.get().getIp();
+//        Long uid = RequestHolder.get().getUid();
+//        // 将 ip 和 uid 存入 Map
+//        Map<String, Object> data = new HashMap<>();
+//        data.put("ip", ip);
+//        data.put("uid", uid);
+        return ApiResult.success(userInfo);
     }
 }
