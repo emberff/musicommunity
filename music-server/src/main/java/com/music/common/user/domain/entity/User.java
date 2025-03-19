@@ -1,34 +1,52 @@
 package com.music.common.user.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import lombok.*;
+
 import java.io.Serializable;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import java.util.Date;
 
 /**
  * <p>
  * 用户表
  * </p>
  *
- * @author <a href="https://github.com/emberff">pf</a>
- * @since 2025-01-07
+ * @author <a href="https://github.com/emberff">emberff</a>
+ * @since 2023-03-19
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("user")
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@TableName(value = "user", autoResultMap = true)
 public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public static final Long UID_SYSTEM = 1L; // 系统用户 ID
+
     /**
-     * 用户id
+     * 用户 ID
      */
-      @TableId(value = "id", type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
+
+    /**
+     * 用户类型 0 管理员, 1 普通用户
+     */
+    @TableField("type")
+    private Integer type;
+
+    /**
+     * 手机号（注册用，唯一）
+     */
+    @TableField("phone")
+    private String phone;
 
     /**
      * 用户昵称
@@ -43,19 +61,13 @@ public class User implements Serializable {
     private String avatar;
 
     /**
-     * 性别 1为男性，2为女性
+     * 性别 1 男性, 2 女性
      */
     @TableField("sex")
     private Integer sex;
 
     /**
-     * 微信openid用户标识
-     */
-    @TableField("open_id")
-    private String openId;
-
-    /**
-     * 在线状态 1在线 2离线
+     * 在线状态 1 在线, 2 离线
      */
     @TableField("active_status")
     private Integer activeStatus;
@@ -64,37 +76,45 @@ public class User implements Serializable {
      * 最后上下线时间
      */
     @TableField("last_opt_time")
-    private LocalDateTime lastOptTime;
+    private Date lastOptTime;
 
     /**
-     * ip信息
+     * IP 信息（JSON）
      */
-    @TableField("ip_info")
-    private String ipInfo;
+    @TableField(value = "ip_info", typeHandler = JacksonTypeHandler.class)
+    private IpInfo ipInfo;
 
     /**
-     * 佩戴的徽章id
-     */
-    @TableField("item_id")
-    private Long itemId;
-
-    /**
-     * 使用状态 0.正常 1拉黑
+     * 用户状态 0 正常, 1 拉黑
      */
     @TableField("status")
     private Integer status;
 
     /**
+     * 用户标签
+     */
+    @TableField("user_tags")
+    private String userTags;
+
+    /**
      * 创建时间
      */
     @TableField("create_time")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     /**
-     * 修改时间
+     * 更新时间
      */
     @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
-
+    /**
+     * 刷新 IP 信息
+     */
+    public void refreshIp(String ip) {
+        if (ipInfo == null) {
+            ipInfo = new IpInfo();
+        }
+        ipInfo.refreshIp(ip);
+    }
 }

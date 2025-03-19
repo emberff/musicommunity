@@ -1,7 +1,7 @@
 package com.music.common.user.mapper;
 
-import com.music.common.user.domain.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.music.common.user.domain.entity.User;
 
 /**
  * <p>

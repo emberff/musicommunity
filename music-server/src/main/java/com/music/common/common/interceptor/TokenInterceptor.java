@@ -1,6 +1,8 @@
 package com.music.common.common.interceptor;
 
 import com.music.common.common.exception.HttpErrorEnum;
+import com.music.common.user.dao.UserDao;
+import com.music.common.user.service.IUserService;
 import com.music.common.user.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,8 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private UserDao userDao;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -33,7 +37,6 @@ public class TokenInterceptor implements HandlerInterceptor {
                 // 401
                 HttpErrorEnum.ACCESS_DENIED.sendHttpError(response);
                 return false;
-
             }
         }
         return true;

@@ -16,7 +16,7 @@ import java.util.Optional;
 
 /**
  * Description: jwt的token生成与解析
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">emberff</a>
  * Date: 2023-04-03
  */
 @Slf4j
@@ -30,6 +30,7 @@ public class JwtUtils {
     private String secret;
 
     private static final String UID_CLAIM = "uid";
+    private static final String PHONE_CLAIM = "uid";
     private static final String CREATE_TIME = "createTime";
 
     /**
