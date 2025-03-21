@@ -1,6 +1,10 @@
 package com.music.common.user.service.impl;
 
 import com.music.common.common.exception.BusinessException;
+import com.music.common.music.dao.PlaylistDao;
+import com.music.common.music.domain.entity.Playlist;
+import com.music.common.music.domain.enums.IsPublicEnum;
+import com.music.common.music.domain.enums.PlayListTypeEnum;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
@@ -20,6 +24,8 @@ public class UserService implements IUserService {
     private UserDao userDao;
     @Autowired
     private LoginService loginService;
+    @Autowired
+    private PlaylistDao playlistDao;
 
     @Override
     public UserLoginResp register(UserRegisterReq userInfo) {
@@ -31,11 +37,18 @@ public class UserService implements IUserService {
                 .phone(userInfo.getPhone())
                 .name(userInfo.getName())
                 .sex(userInfo.getSex())
-                .avatar(userInfo.getAvatar()).build();
+                .avatar(userInfo.getAvatar())
+                .build();
         userDao.save(user);
 
-        Long uid = userDao.getByPhone(userInfo.getPhone()).getId();
-        String token = loginService.login(uid);
+        Playlist playlist = Playlist.builder()
+                .type(PlayListTypeEnum.USER_FAVOURITE.getValue())
+                .isPublic(IsPublicEnum.IS_PUBLIC.getValue())
+                .plCreatorId(user.getId())
+                .build();
+        playlistDao.save(playlist);
+
+        String token = loginService.login(user.getId());
         UserLoginResp userLoginResp = new UserLoginResp();
         userLoginResp.setToken(token);
         return userLoginResp;

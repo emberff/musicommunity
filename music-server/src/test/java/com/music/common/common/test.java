@@ -4,9 +4,10 @@ import com.music.common.MusicommunityApplication;
 import com.music.common.common.thread.MyUncaughtExceptionHandler;
 import com.music.common.common.utils.JwtUtils;
 import com.music.common.common.utils.RedisUtils;
+import com.music.common.music.domain.vo.request.PlaylistAddReq;
+import com.music.common.music.service.IPlaylistService;
 import com.music.common.user.service.LoginService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.juli.logging.Log;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.redisson.api.RLock;
@@ -72,5 +73,16 @@ public class test {
         thread.setUncaughtExceptionHandler(new MyUncaughtExceptionHandler());
         thread.start();
         Thread.sleep(200);
+    }
+
+    @Autowired
+    private IPlaylistService playlistServicel;
+    @Test
+    public void musiclist() {
+        PlaylistAddReq playlistAddReq = new PlaylistAddReq();
+        playlistAddReq.setName("test");
+        playlistAddReq.setCover("123");
+        playlistAddReq.setIsPublic(1);
+        playlistServicel.addMusiclist(playlistAddReq);
     }
 }
