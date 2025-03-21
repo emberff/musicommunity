@@ -14,17 +14,17 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class UserRegisterReq {
 
-    @ApiModelProperty(value = "手机号")
+    @ApiModelProperty(value = "手机号", required = true)
     @NotNull
     private String phone;
 
-    @ApiModelProperty(value = "用户昵称")
+    @ApiModelProperty(value = "用户昵称", required = true)
     @NotNull
     private String name;
 
-    @ApiModelProperty(value = "头像")
+    @ApiModelProperty(value = "头像",required = true)
     private String avatar;
 
-    @ApiModelProperty(value = "性别 1为男性，2为女性")
+    @ApiModelProperty(value = "性别 1为男性，2为女性", required = true)
     private Integer sex;
 }

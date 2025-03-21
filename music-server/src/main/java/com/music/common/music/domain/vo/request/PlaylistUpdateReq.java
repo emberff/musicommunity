@@ -20,7 +20,7 @@ import javax.validation.constraints.NotNull;
 public class PlaylistUpdateReq {
 
     @NotNull
-    @ApiModelProperty("歌单id")
+    @ApiModelProperty(value = "歌单id", required = true)
     private Long id;
 
     @NotBlank

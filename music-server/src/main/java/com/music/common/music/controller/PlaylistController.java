@@ -8,6 +8,7 @@ import com.music.common.music.domain.vo.request.AddSongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
 import com.music.common.music.service.IPlaylistService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,8 @@ import javax.validation.Valid;
  * @author <a href="https://github.com/emberff">pf</a>
  * @since 2025-03-20
  */
-@Controller
+@RestController
+@Api(tags = "歌单相关接口")
 @RequestMapping("/playlist")
 public class PlaylistController {
 

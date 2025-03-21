@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdReqVO {
-    @ApiModelProperty("id")
+    @ApiModelProperty(value = "id", required = true)
     @NotNull
     private Long id;
 }

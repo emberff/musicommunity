@@ -21,14 +21,14 @@ public class PlaylistAddReq {
 
     @NotBlank
     @Length(max = 6)
-    @ApiModelProperty("歌单名")
+    @ApiModelProperty(value = "歌单名", required = true)
     private String name;
 
     @NotBlank
-    @ApiModelProperty("封面url")
+    @ApiModelProperty(value = "封面url", required = true)
     private String cover;
 
     @NotNull
-    @ApiModelProperty("是否公开")
+    @ApiModelProperty(value = "是否公开", required = true)
     private Integer isPublic;
 }

@@ -21,11 +21,11 @@ import java.util.List;
 public class AddSongToPlaylistReq {
 
     @NotNull
-    @ApiModelProperty("歌单id")
+    @ApiModelProperty(value = "歌单id", required = true)
     private Long playlistId;
 
     @NotNull
-    @ApiModelProperty("歌曲id列表")
+    @ApiModelProperty(value = "歌曲id列表", required = true, example = "[1, 2]")
     private List<Long> songIds;
 
 }

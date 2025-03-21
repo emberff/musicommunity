@@ -8,6 +8,7 @@ import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
 import com.music.common.user.service.IUserService;
 import com.music.common.user.service.LoginService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
+@Api(tags = "用户相关接口")
 @RequestMapping("/capi/user")
 public class UserController {
 

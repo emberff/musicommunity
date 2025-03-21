@@ -6,12 +6,14 @@ import com.music.common.common.domain.vo.resp.ApiResult;
 import com.music.common.music.domain.vo.reponse.SingerDetailResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
 import com.music.common.music.service.ISingerService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -23,7 +25,8 @@ import javax.validation.Valid;
  * @author <a href="https://github.com/emberff">pf</a>
  * @since 2025-03-21
  */
-@Controller
+@RestController
+@Api(tags = "歌手相关接口")
 @RequestMapping("/singer")
 public class SingerController {
     @Autowired
