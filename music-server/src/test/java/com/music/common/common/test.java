@@ -83,6 +83,6 @@ public class test {
         playlistAddReq.setName("test");
         playlistAddReq.setCover("123");
         playlistAddReq.setIsPublic(1);
-        playlistServicel.addMusiclist(playlistAddReq);
+        playlistServicel.addPlaylist(playlistAddReq);
     }
 }
