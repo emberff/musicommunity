@@ -19,7 +19,7 @@ spring:
     # 连接超时时间
     timeout: 1800000
     # 设置密码
-#    password: ${music.redis.password}
+    password: ${music.redis.password}
   jackson:
     serialization:
       # 自动将前端返回的date类型数据转换为时间戳
