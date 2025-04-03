@@ -1,5 +1,6 @@
 package com.music.common.websocket.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
@@ -26,6 +27,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * 专门管理 WebSocket 的逻辑
@@ -69,8 +71,10 @@ public class WebSocketServiceImpl implements WebSocketService {
 
     @Override
     public void authorize(Channel channel, String token) {
+
         Long uid = loginService.getValidUid(token);
-        if (Objects.nonNull(uid)) {
+        System.out.println(token);
+        if (uid != null) {
             // 前端请求token非空, 直接发送token并返回前端
             User user = userDao.getById(uid);
             loginSuccess(channel, user, token);
@@ -79,7 +83,14 @@ public class WebSocketServiceImpl implements WebSocketService {
         }
     }
 
+    /**
+     * (channel在本地)登录成功，并更新状态
+     */
     private void loginSuccess(Channel channel, User user, String token) {
+        //更新上线列表
+        online(channel, user.getId());
+        //返回给用户登录成功
+//        boolean hasPower = iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
         // 保存channel的对应uid
         WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         wsChannelExtraDTO.setUid(user.getId());
@@ -89,6 +100,35 @@ public class WebSocketServiceImpl implements WebSocketService {
 //        user.setLastOptTime(new Date());
 //        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
 //        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
+    }
+
+    /**
+     * 所有在线的用户和对应的socket
+     */
+    private static final ConcurrentHashMap<Long, CopyOnWriteArrayList<Channel>> ONLINE_UID_MAP = new ConcurrentHashMap<>();
+
+    public static ConcurrentHashMap<Channel, WSChannelExtraDTO> getOnlineMap() {
+        return ONLINE_WS_MAP;
+    }
+
+    private void online(Channel channel, Long uid) {
+        getOrInitChannelExt(channel).setUid(uid);
+        ONLINE_UID_MAP.putIfAbsent(uid, new CopyOnWriteArrayList<>());
+        ONLINE_UID_MAP.get(uid).add(channel);
+        NettyUtil.setAttr(channel, NettyUtil.UID, uid);
+    }
+
+    /**
+     * 如果在线列表不存在，就先把该channel放进在线列表
+     *
+     * @param channel
+     * @return
+     */
+    private WSChannelExtraDTO getOrInitChannelExt(Channel channel) {
+        WSChannelExtraDTO wsChannelExtraDTO =
+                ONLINE_WS_MAP.getOrDefault(channel, new WSChannelExtraDTO());
+        WSChannelExtraDTO old = ONLINE_WS_MAP.putIfAbsent(channel, wsChannelExtraDTO);
+        return ObjectUtil.isNull(old) ? wsChannelExtraDTO : old;
     }
 
 //    @Override

@@ -10,6 +10,8 @@ import java.net.InetSocketAddress;
 import java.util.Optional;
 
 public class MyHandCollectHandler extends ChannelInboundHandlerAdapter {
+    public static final String AUTHORIZATION_SCHEMA = "Bearer ";
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg instanceof HttpRequest) {
@@ -20,7 +22,7 @@ public class MyHandCollectHandler extends ChannelInboundHandlerAdapter {
                     .map(k -> k.get("token"))
                     .map(CharSequence::toString);
             // 如果token存在
-            token.ifPresent(s -> NettyUtil.setAttr(ctx.channel(), NettyUtil.TOKEN, s));
+            token.ifPresent(s -> NettyUtil.setAttr(ctx.channel(), NettyUtil.TOKEN, formatToken(s)));
             // 移除后面拼接的所有参数
             request.setUri(urlBuilder.getPath().toString());
 
@@ -36,6 +38,13 @@ public class MyHandCollectHandler extends ChannelInboundHandlerAdapter {
             ctx.pipeline().remove(this);
         }
         ctx.fireChannelRead(msg);
+    }
+    //格式化 "Bearer "
+    private String formatToken(String bearerToken) {
+        return Optional.ofNullable(bearerToken)
+                .filter(h -> h.startsWith(AUTHORIZATION_SCHEMA))
+                .map(h -> h.replaceFirst(AUTHORIZATION_SCHEMA, ""))
+                .orElse(null);
     }
 }
 

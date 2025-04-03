@@ -15,6 +15,9 @@ import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
+
 
 @Slf4j
 public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<TextWebSocketFrame> {
@@ -40,11 +43,14 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        //握手完成
         if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
             String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
             if (StrUtil.isNotBlank(token)) {
                 webSocketService.authorize(ctx.channel(), token);
+
             }
+        //读空闲
         } else if (evt instanceof IdleStateEvent) {
             IdleStateEvent event = (IdleStateEvent)evt;
             if (event.state() == IdleState.READER_IDLE) {
@@ -54,6 +60,8 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
             }
         }
     }
+
+
 
     /**
      * 用户下线统一处理

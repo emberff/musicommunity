@@ -1,6 +1,8 @@
 package com.music.common.user.service.impl;
 
+import com.music.common.common.constant.RedisKey;
 import com.music.common.common.exception.BusinessException;
+import com.music.common.common.utils.RedisUtils;
 import com.music.common.music.dao.PlaylistDao;
 import com.music.common.music.domain.entity.Playlist;
 import com.music.common.music.domain.enums.IsPublicEnum;
@@ -14,6 +16,7 @@ import com.music.common.user.service.IUserService;
 import com.music.common.user.service.LoginService;
 import com.music.common.user.service.adapter.UserAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 @Slf4j
@@ -56,14 +59,23 @@ public class UserService implements IUserService {
 
     @Override
     public UserLoginResp login(String phone) {
-        User byPhone = userDao.getByPhone(phone);
-        if (byPhone == null) {
+        User user = userDao.getByPhone(phone);
+        if (user == null) {
             throw new BusinessException("未查询到用户信息, 请注册");
         }
-        String token = loginService.login(byPhone.getId());
+        String token = RedisUtils.getStr(getUserTokenKey(user.getId()));
         UserLoginResp userLoginResp = new UserLoginResp();
+        if (StringHelper.isNullOrEmptyString(token)) {
+            token = loginService.login(user.getId());
+            userLoginResp.setToken(token);
+            return userLoginResp;
+        }
         userLoginResp.setToken(token);
         return userLoginResp;
+    }
+
+    private String getUserTokenKey(Long uid) {
+        return RedisKey.getKey(RedisKey.USER_TOKEN_STRING, uid);
     }
 
 
