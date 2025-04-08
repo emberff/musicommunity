@@ -1,5 +1,9 @@
 package com.music.common.music.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.music.common.common.domain.vo.req.PageBaseReq;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.exception.BusinessException;
 import com.music.common.common.utils.AssertUtil;
 import com.music.common.common.utils.RequestHolder;
@@ -14,7 +18,8 @@ import com.music.common.music.domain.entity.UserPlaylist;
 import com.music.common.music.domain.enums.IsPublicEnum;
 import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
-import com.music.common.music.domain.vo.request.AddSongToPlaylistReq;
+import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
+import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
 import com.music.common.music.service.IPlaylistService;
@@ -24,9 +29,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -105,13 +110,38 @@ public class PlaylistServiceImpl implements IPlaylistService {
     }
 
     @Override
-    public void addSongToPlaylist(AddSongToPlaylistReq req) {
+    public void addSongToPlaylist(SongToPlaylistReq req) {
         Playlist playlist = playlistDao.getById(req.getPlaylistId());
         AssertUtil.isNotEmpty(playlist, "未查询到歌单信息!");
         Boolean checkPower = validateMngPower(req.getPlaylistId(), RequestHolder.get().getUid());
         AssertUtil.isTrue(checkPower, "无修改歌单信息权限!");
         playlistSongService.addSongsToPlaylist(req.getPlaylistId(), req.getSongIds());
 //        playlistSongDao.addSongToPlaylist(req.getPlaylistId(), req.getSongIds());
+    }
+
+    @Override
+    public void deteteSongToPlaylist(SongToPlaylistReq req) {
+        Playlist playlist = playlistDao.getById(req.getPlaylistId());
+        AssertUtil.isNotEmpty(playlist, "未查询到歌单信息!");
+        Boolean checkPower = validateMngPower(req.getPlaylistId(), RequestHolder.get().getUid());
+        AssertUtil.isTrue(checkPower, "无修改歌单信息权限!");
+        playlistSongService.deleteSongToPlaylist(req.getPlaylistId(), req.getSongIds());
+    }
+
+    @Override
+    public PageBaseResp<PlaylistPageResp> pagePlaylist(Long uid, PageBaseReq req) {
+        IPage<UserPlaylist> playlistIPage = userPlaylistDao.getPage(uid, req.plusPage());
+        List<UserPlaylist> records = playlistIPage.getRecords();
+        List<PlaylistPageResp> pageResp = new ArrayList<>();
+        for(UserPlaylist record : records) {
+            PlaylistPageResp resp = new PlaylistPageResp();
+            Playlist playlist = playlistDao.getById(record.getPlaylistId());
+            BeanUtil.copyProperties(playlist, resp);
+            resp.setPlSongNum(playlistSongDao.getExistingSongIds(playlist.getId()).size());
+            pageResp.add(resp);
+        }
+
+        return PageBaseResp.init(playlistIPage, pageResp);
     }
 
 

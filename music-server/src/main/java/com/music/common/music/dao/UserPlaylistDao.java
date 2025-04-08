@@ -1,5 +1,7 @@
 package com.music.common.music.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.music.common.music.domain.entity.UserPlaylist;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,4 +19,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserPlaylistDao extends ServiceImpl<UserPlaylistMapper, UserPlaylist>{
 
+    public IPage<UserPlaylist> getPage(Long uid, Page page) {
+        return lambdaQuery()
+                .eq(UserPlaylist::getUserId, uid)
+                .page(page);
+    }
 }

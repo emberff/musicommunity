@@ -1,5 +1,7 @@
 package com.music.common.music.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.music.domain.entity.Playlist;
 import com.music.common.music.mapper.PlaylistMapper;
@@ -28,4 +30,5 @@ public class PlaylistDao extends ServiceImpl<PlaylistMapper, Playlist>{
                 .set(Playlist::getStatus, NormalOrNoEnum.NOT_NORMAL.getStatus())
                 .update();
     }
+
 }

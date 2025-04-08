@@ -15,4 +15,6 @@ import java.util.List;
 public interface IPlaylistSongService {
 
     void addSongsToPlaylist(Long playlistId, List<Long> songIds);
+
+    void deleteSongToPlaylist(Long playlistId, List<Long> songIds);
 }

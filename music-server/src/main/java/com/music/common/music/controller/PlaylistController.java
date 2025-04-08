@@ -2,9 +2,13 @@ package com.music.common.music.controller;
 
 
 import com.music.common.common.domain.vo.req.IdReqVO;
+import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.ApiResult;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
+import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
-import com.music.common.music.domain.vo.request.AddSongToPlaylistReq;
+import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
+import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
 import com.music.common.music.service.IPlaylistService;
@@ -12,8 +16,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
 
@@ -60,13 +62,27 @@ public class PlaylistController {
         return ApiResult.success(playlistService.getPlaylistDetail(req.getId()));
     }
 
+    @GetMapping("/page")
+    @ApiOperation("歌单分页")
+    public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
+        Long uid = RequestHolder.get().getUid();
+        return ApiResult.success(playlistService.pagePlaylist(uid, req));
+    }
+
     @PutMapping("/addSong")
     @ApiOperation("添加歌曲")
-    public ApiResult<Void> addSongToPlaylist(@Valid @RequestBody AddSongToPlaylistReq req) {
+    public ApiResult<Void> addSongToPlaylist(@Valid @RequestBody SongToPlaylistReq req) {
         playlistService.addSongToPlaylist(req);
         return ApiResult.success();
     }
 
-    //TODO 1.歌单删除歌曲 2.歌单列表分页
+    @DeleteMapping("/deleteSong")
+    @ApiOperation("删除歌单内歌曲")
+    public ApiResult<Void> deletePlaylistSong(@Valid @RequestBody SongToPlaylistReq req) {
+        playlistService.deteteSongToPlaylist(req);
+        return ApiResult.success();
+    }
+
+    //TODO 歌单内歌曲分页
 }
 

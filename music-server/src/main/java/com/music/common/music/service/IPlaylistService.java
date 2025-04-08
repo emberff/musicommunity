@@ -1,11 +1,12 @@
 package com.music.common.music.service;
 
+import com.music.common.common.domain.vo.req.PageBaseReq;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
-import com.music.common.music.domain.vo.request.AddSongToPlaylistReq;
+import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
+import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
-
-import javax.validation.Valid;
 
 /**
  * <p>
@@ -46,5 +47,19 @@ public interface IPlaylistService{
      * 在歌单添加歌曲
      * @param req
      */
-    void addSongToPlaylist(AddSongToPlaylistReq req);
+    void addSongToPlaylist(SongToPlaylistReq req);
+
+    /**
+     * 在歌单删除歌曲
+     * @param req
+     */
+    void deteteSongToPlaylist(SongToPlaylistReq req);
+
+    /**
+     * 歌单信息分页
+     * @param uid
+     * @param req
+     * @return
+     */
+    PageBaseResp<PlaylistPageResp> pagePlaylist(Long uid, PageBaseReq req);
 }

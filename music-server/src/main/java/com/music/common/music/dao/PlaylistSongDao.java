@@ -1,5 +1,8 @@
 package com.music.common.music.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.music.common.music.domain.entity.PlaylistSong;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
@@ -36,9 +39,24 @@ public class PlaylistSongDao extends ServiceImpl<PlaylistSongMapper, PlaylistSon
                 .collect(Collectors.toSet());
     }
 
-    public void savePlaylistSongs(List<PlaylistSong> playlistSongs) {
-        if (!playlistSongs.isEmpty()) {
-            this.saveBatch(playlistSongs);
+    public void savePlaylistSongs(Long playlistId, List<PlaylistSong> songsToAdd) {
+        if (!songsToAdd.isEmpty()) {
+            for (PlaylistSong song : songsToAdd) {
+                PlaylistSong playlistSong = PlaylistSong.builder()
+                        .playlistId(playlistId)
+                        .songId(song.getSongId())
+                        .build();
+                this.save(playlistSong);
+            }
         }
     }
+
+    public void deletePlaylistSongs(Long playlistId, List<Long> songsToDelete) {
+        if (!songsToDelete.isEmpty()) {
+            this.remove(new LambdaQueryWrapper<PlaylistSong>()
+                    .eq(PlaylistSong::getPlaylistId, playlistId)
+                    .in(PlaylistSong::getSongId, songsToDelete));
+        }
+    }
+
 }

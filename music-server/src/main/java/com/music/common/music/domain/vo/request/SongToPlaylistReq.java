@@ -5,20 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * 歌单添加歌曲类
+ * 歌单添加/删除歌曲类
  */
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AddSongToPlaylistReq {
+public class SongToPlaylistReq {
 
     @NotNull
     @ApiModelProperty(value = "歌单id", required = true)
