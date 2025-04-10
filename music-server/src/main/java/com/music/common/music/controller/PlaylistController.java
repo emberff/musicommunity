@@ -8,6 +8,8 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
+import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
+import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
 import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
@@ -29,7 +31,7 @@ import javax.validation.Valid;
  */
 @RestController
 @Api(tags = "歌单相关接口")
-@RequestMapping("/playlist")
+@RequestMapping("/capi/playlist")
 public class PlaylistController {
 
     @Autowired
@@ -63,7 +65,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/page")
-    @ApiOperation("歌单分页")
+    @ApiOperation("用户歌单分页")
     public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
         Long uid = RequestHolder.get().getUid();
         return ApiResult.success(playlistService.pagePlaylist(uid, req));
@@ -83,6 +85,11 @@ public class PlaylistController {
         return ApiResult.success();
     }
 
-    //TODO 歌单内歌曲分页
+    @GetMapping("/song/page")
+    @ApiOperation("用户歌单分页")
+    public ApiResult<PageBaseResp<PlaylistSongPageResp>> page(@Valid PlaylistSongPageReq req) {
+        return ApiResult.success(playlistService.pagePlaylistSong(req));
+    }
+
 }
 

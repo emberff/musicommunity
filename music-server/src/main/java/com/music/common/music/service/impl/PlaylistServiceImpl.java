@@ -7,18 +7,14 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.exception.BusinessException;
 import com.music.common.common.utils.AssertUtil;
 import com.music.common.common.utils.RequestHolder;
-import com.music.common.music.dao.PlaylistDao;
-import com.music.common.music.dao.PlaylistSongDao;
-import com.music.common.music.dao.PowerDao;
-import com.music.common.music.dao.UserPlaylistDao;
-import com.music.common.music.domain.entity.Playlist;
-import com.music.common.music.domain.entity.PlaylistSong;
-import com.music.common.music.domain.entity.Power;
-import com.music.common.music.domain.entity.UserPlaylist;
+import com.music.common.music.dao.*;
+import com.music.common.music.domain.entity.*;
 import com.music.common.music.domain.enums.IsPublicEnum;
 import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
+import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
+import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
 import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
@@ -46,6 +42,10 @@ public class PlaylistServiceImpl implements IPlaylistService {
     private IPlaylistSongService playlistSongService;
     @Autowired
     private PlaylistSongDao playlistSongDao;
+    @Autowired
+    private SongDao songDao;
+    @Autowired
+    private SingerDao singerDao;
 
     @Override
     public void addPlaylist(PlaylistAddReq req) {
@@ -142,6 +142,26 @@ public class PlaylistServiceImpl implements IPlaylistService {
         }
 
         return PageBaseResp.init(playlistIPage, pageResp);
+    }
+
+    @Override
+    public PageBaseResp<PlaylistSongPageResp> pagePlaylistSong(PlaylistSongPageReq req) {
+        Playlist playlist = playlistDao.getById(req.getPlaylistId());
+        //非公开歌单, 且无对歌单的管理权限 => 不可查询
+        boolean validate = validateMngPower(req.getPlaylistId(), RequestHolder.get().getUid()) || playlist.getIsPublic() == 1;
+        AssertUtil.isTrue(validate, "无权限查看歌单信息");
+        IPage<PlaylistSong> playlistSongIPage = playlistSongDao.getPage(req.getPlaylistId(), req.plusPage());
+        List<PlaylistSongPageResp> pageResps = new ArrayList<>();
+        for (PlaylistSong record : playlistSongIPage.getRecords()) {
+            Song song = songDao.getById(record.getSongId());
+            Singer singer = singerDao.getById(song.getSingerId());
+            PlaylistSongPageResp resp = new PlaylistSongPageResp();
+            BeanUtil.copyProperties(song, resp);
+            resp.setSingerName(singer.getName());
+            pageResps.add(resp);
+        }
+
+        return PageBaseResp.init(playlistSongIPage, pageResps);
     }
 
 

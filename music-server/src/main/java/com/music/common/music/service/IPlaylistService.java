@@ -4,6 +4,8 @@ import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
+import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
+import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
 import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
@@ -62,4 +64,11 @@ public interface IPlaylistService{
      * @return
      */
     PageBaseResp<PlaylistPageResp> pagePlaylist(Long uid, PageBaseReq req);
+
+    /**
+     * 歌单内歌曲分页
+     * @param req
+     * @return
+     */
+    PageBaseResp<PlaylistSongPageResp> pagePlaylistSong(PlaylistSongPageReq req);
 }

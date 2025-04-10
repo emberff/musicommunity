@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.music.common.music.domain.entity.PlaylistSong;
+import com.music.common.music.domain.entity.UserPlaylist;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.mapper.PlaylistSongMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -59,4 +60,9 @@ public class PlaylistSongDao extends ServiceImpl<PlaylistSongMapper, PlaylistSon
         }
     }
 
+    public IPage<PlaylistSong> getPage(Long playlistId, Page page) {
+        return lambdaQuery()
+                .eq(PlaylistSong::getPlaylistId, playlistId)
+                .page(page);
+    }
 }
