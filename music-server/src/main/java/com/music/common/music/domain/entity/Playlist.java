@@ -88,12 +88,6 @@ public class Playlist implements Serializable {
     private Integer plFollowNumber;
 
     /**
-     * 歌单标签
-     */
-    @TableField("pl_tag")
-    private String plTag;
-
-    /**
      * 创建者id
      */
     @TableField("pl_creator_id")

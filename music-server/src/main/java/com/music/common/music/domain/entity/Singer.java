@@ -48,12 +48,6 @@ public class Singer implements Serializable {
     @TableField("follow_num")
     private Integer followNum;
 
-    /**
-     * 标签
-     */
-    @TableField("tag")
-    private String tag;
-
     @TableField("create_time")
     private LocalDateTime createTime;
 
