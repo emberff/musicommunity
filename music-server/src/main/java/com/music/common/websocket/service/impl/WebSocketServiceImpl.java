@@ -1,10 +1,12 @@
 package com.music.common.websocket.service.impl;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.music.common.common.event.UserOnlineEvent;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.service.LoginService;
@@ -16,6 +18,7 @@ import com.music.common.websocket.service.adapter.WebSocketAdapter;
 import io.netty.channel.Channel;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationEventPublisher;
@@ -32,6 +35,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 专门管理 WebSocket 的逻辑
  */
+@Slf4j
 @Service
 public class WebSocketServiceImpl implements WebSocketService {
     @Autowired
@@ -96,10 +100,10 @@ public class WebSocketServiceImpl implements WebSocketService {
         wsChannelExtraDTO.setUid(user.getId());
         // 推送成功消息
         sendMsg(channel, WebSocketAdapter.buildResp(user, token));
-//        // 用户上线的事件
-//        user.setLastOptTime(new Date());
-//        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
-//        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
+        // 用户上线的事件
+        user.setLastOptTime(new Date());
+        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
+        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
     }
 
     /**
@@ -131,18 +135,43 @@ public class WebSocketServiceImpl implements WebSocketService {
         return ObjectUtil.isNull(old) ? wsChannelExtraDTO : old;
     }
 
-//    @Override
-//    public void sendMsgToAll(WSBaseResp<?> msg) {
-//        ONLINE_WS_MAP.forEach((channel, ext) -> {
-//            threadPoolTaskExecutor.execute(() -> {
-//                sendMsg(channel, msg);
-//            });
-//        });
-//    }
+    //entrySet的值不是快照数据,但是它支持遍历，所以无所谓了，不用快照也行。
+    @Override
+    public void sendToAllOnline(WSBaseResp<?> wsBaseResp, Long skipUid) {
+        ONLINE_WS_MAP.forEach((channel, ext) -> {
+            if (Objects.nonNull(skipUid) && Objects.equals(ext.getUid(), skipUid)) {
+                return;
+            }
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
+        });
+    }
+
+    @Override
+    public void sendToAllOnline(WSBaseResp<?> wsBaseResp) {
+        sendToAllOnline(wsBaseResp, null);
+    }
+
+    @Override
+    public void sendToUid(WSBaseResp<?> wsBaseResp, Long uid) {
+        CopyOnWriteArrayList<Channel> channels = ONLINE_UID_MAP.get(uid);
+        if (CollectionUtil.isEmpty(channels)) {
+            log.info("用户：{}不在线", uid);
+            return;
+        }
+        channels.forEach(channel -> {
+            threadPoolTaskExecutor.execute(() -> sendMsg(channel, wsBaseResp));
+        });
+    }
 
 
-    private void sendMsg(Channel channel, WSBaseResp<?> resp) {
-        channel.writeAndFlush(new TextWebSocketFrame(JSONUtil.toJsonStr(resp)));
+    /**
+     * 给本地channel发送消息
+     *
+     * @param channel
+     * @param wsBaseResp
+     */
+    private void sendMsg(Channel channel, WSBaseResp<?> wsBaseResp) {
+        channel.writeAndFlush(new TextWebSocketFrame(JSONUtil.toJsonStr(wsBaseResp)));
     }
 
 }

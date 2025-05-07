@@ -16,6 +16,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -52,6 +55,14 @@ public class UserDao extends ServiceImpl<UserMapper, User> {
                 .list();
 
     }
+
+    public Map<Long, User> getBatch(List<Long> uids) {
+        List<User> userList = lambdaQuery()
+                .in(User::getId, uids)
+                .list();
+        return userList.stream().collect(Collectors.toMap(User::getId, Function.identity()));
+    }
+
 
     public List<User> getFriendList(List<Long> uids) {
         return lambdaQuery()
