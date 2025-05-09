@@ -20,11 +20,10 @@ public class PlaylistAdapter {
         return playlist;
     }
 
-    public static PlaylistDetailResp buildPlaylistDetail(Playlist playlist, List<PlaylistSong> simpleSongList) {
+    public static PlaylistDetailResp buildPlaylistDetail(Playlist playlist, List<SimpleSongListResp> simpleSongList) {
         PlaylistDetailResp playlistDetailResp = new PlaylistDetailResp();
         BeanUtil.copyProperties(playlist, playlistDetailResp);
-        List<SimpleSongListResp> simpleSongListResps = BeanUtil.copyToList(simpleSongList, SimpleSongListResp.class);
-        playlistDetailResp.setSongs(simpleSongListResps);
+        playlistDetailResp.setSongs(simpleSongList);
         return playlistDetailResp;
     }
 }

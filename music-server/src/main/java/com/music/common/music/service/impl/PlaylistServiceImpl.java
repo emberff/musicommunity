@@ -14,6 +14,7 @@ import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
+import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
 import com.music.common.music.domain.vo.request.SongToPlaylistReq;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
@@ -105,7 +106,14 @@ public class PlaylistServiceImpl implements IPlaylistService {
                 throw new BusinessException("不可查看歌单!");
             }
         }
-        List<PlaylistSong> simpleSongList =  playlistSongDao.getSimpleSongListByPlaylistId(playlistId);
+        List<PlaylistSong> playlistSongList =  playlistSongDao.getSimpleSongListByPlaylistId(playlistId);
+        List<SimpleSongListResp> simpleSongList = new ArrayList<>();
+        for (PlaylistSong playlistSong : playlistSongList) {
+            Song song = songDao.getById(playlistSong.getSongId());
+            SimpleSongListResp simpleSongListResp = new SimpleSongListResp();
+            BeanUtil.copyProperties(song, simpleSongListResp);
+            simpleSongList.add(simpleSongListResp);
+        }
         return PlaylistAdapter.buildPlaylistDetail(playlist, simpleSongList);
     }
 

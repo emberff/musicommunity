@@ -1,5 +1,7 @@
 package com.music.common.music.service;
 
+import com.music.common.common.domain.vo.req.PageBaseReq;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.entity.Song;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
@@ -18,5 +20,7 @@ import java.util.List;
 public interface ISongService{
 
     SongDetailResp getSongDetail(Long id);
+
+    PageBaseResp<SimpleSongListResp> getSongPage(PageBaseReq req);
 
 }

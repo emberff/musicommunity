@@ -86,7 +86,7 @@ public class PlaylistController {
     }
 
     @GetMapping("/song/page")
-    @ApiOperation("用户歌单分页")
+    @ApiOperation("用户歌单内歌曲分页")
     public ApiResult<PageBaseResp<PlaylistSongPageResp>> page(@Valid PlaylistSongPageReq req) {
         return ApiResult.success(playlistService.pagePlaylistSong(req));
     }

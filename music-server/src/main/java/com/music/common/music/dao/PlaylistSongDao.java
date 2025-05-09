@@ -32,13 +32,15 @@ public class PlaylistSongDao extends ServiceImpl<PlaylistSongMapper, PlaylistSon
 
     public Set<Long> getExistingSongIds(Long playlistId) {
         return lambdaQuery()
-                .select(PlaylistSong::getSongId)
                 .eq(PlaylistSong::getPlaylistId, playlistId)
                 .list()
                 .stream()
                 .map(PlaylistSong::getSongId)
                 .collect(Collectors.toSet());
     }
+
+
+
 
     public void savePlaylistSongs(Long playlistId, List<PlaylistSong> songsToAdd) {
         if (!songsToAdd.isEmpty()) {

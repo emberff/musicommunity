@@ -1,11 +1,18 @@
 package com.music.common.music.service.adapter;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.entity.Playlist;
 import com.music.common.music.domain.entity.Singer;
 import com.music.common.music.domain.entity.Song;
+import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 public class SongAdapter {
@@ -21,5 +28,15 @@ public class SongAdapter {
         songDetailResp.setSingerId(singer.getId());
         songDetailResp.setSingerName(singer.getName());
         return songDetailResp;
+    }
+
+    public static PageBaseResp<SimpleSongListResp> buildSimpleSongListRespPage(List<Song> songs, Page page) {
+        List<SimpleSongListResp> lists = new ArrayList<>();
+        for (Song song : songs) {
+            SimpleSongListResp simpleSongListResp = new SimpleSongListResp();
+            BeanUtil.copyProperties(song, simpleSongListResp);
+            lists.add(simpleSongListResp);
+        }
+        return PageBaseResp.init(page, lists);
     }
 }

@@ -1,5 +1,9 @@
 package com.music.common.music.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.music.common.common.domain.vo.req.PageBaseReq;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.AssertUtil;
 import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.dao.*;
@@ -41,6 +45,12 @@ public class SongServiceImpl implements ISongService {
         // 歌手信息
         Singer singer = singerDao.getById(song.getSingerId());
         return SongAdapter.buildSongDetail(song, playlist, singer);
+    }
+
+    @Override
+    public PageBaseResp<SimpleSongListResp> getSongPage(PageBaseReq req) {
+        List<Song> songs = songDao.getPage(req.plusPage()).getRecords();
+        return SongAdapter.buildSimpleSongListRespPage(songs, req.plusPage());
     }
 
 
