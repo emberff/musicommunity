@@ -2,6 +2,8 @@ package com.music.common.music.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.music.common.chat.domain.vo.request.GroupAddReq;
+import com.music.common.chat.service.RoomAppService;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.exception.BusinessException;
@@ -10,6 +12,7 @@ import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.dao.*;
 import com.music.common.music.domain.entity.*;
 import com.music.common.music.domain.enums.IsPublicEnum;
+import com.music.common.music.domain.enums.PlayListTypeEnum;
 import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
@@ -25,6 +28,7 @@ import com.music.common.music.service.adapter.PlaylistAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,15 +51,21 @@ public class PlaylistServiceImpl implements IPlaylistService {
     private SongDao songDao;
     @Autowired
     private SingerDao singerDao;
+    @Autowired
+    private RoomAppService roomService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void addPlaylist(PlaylistAddReq req) {
         Long uid = RequestHolder.get().getUid();
-
+        //直接建立一个歌单对应的群聊房间
+        Long roomId = roomService.addGroup(uid, new GroupAddReq());
         Playlist playlist = Playlist.builder()
                 .name(req.getName())
+                .type(PlayListTypeEnum.USER_PLAYLIST.getValue())
                 .cover(req.getCover())
                 .isPublic(req.getIsPublic())
+                .roomId(roomId)
                 .plCreatorId(uid)
                 .build();
         playlistDao.save(playlist);

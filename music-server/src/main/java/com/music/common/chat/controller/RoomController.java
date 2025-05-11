@@ -80,6 +80,7 @@ public class RoomController {
 //        return ApiResult.success();
 //    }
 
+    //TODO 新增和邀请与歌单管理模块集成
     @PostMapping("/group")
     @ApiOperation("新增群组")
     public ApiResult<IdRespVO> addGroup(@Valid @RequestBody GroupAddReq request) {

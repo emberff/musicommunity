@@ -58,6 +58,12 @@ public class Playlist implements Serializable {
     private Integer isPublic;
 
     /**
+     * 聊天室id
+     */
+    @TableField("room_id")
+    private Long roomId;
+
+    /**
      * 歌单歌曲数
      */
     @TableField("pl_song_number")

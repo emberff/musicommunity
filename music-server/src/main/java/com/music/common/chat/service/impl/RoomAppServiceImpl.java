@@ -249,6 +249,9 @@ public class RoomAppServiceImpl implements RoomAppService {
     @Transactional
     public Long addGroup(Long uid, GroupAddReq request) {
         RoomGroup roomGroup = roomService.createGroupRoom(uid);
+        if (CollectionUtils.isEmpty(request.getUidList())) {
+            return roomGroup.getRoomId();
+        }
         // 批量保存群成员
         List<GroupMember> groupMembers = RoomAdapter.buildGroupMemberBatch(request.getUidList(), roomGroup.getId());
         groupMemberDao.saveBatch(groupMembers);
@@ -257,6 +260,7 @@ public class RoomAppServiceImpl implements RoomAppService {
         return roomGroup.getRoomId();
     }
 
+    //todo 与歌单paower继承整合
     private boolean hasPower(GroupMember self) {
         return Objects.equals(self.getRole(), GroupRoleEnum.LEADER.getType())
                 || Objects.equals(self.getRole(), GroupRoleEnum.MANAGER.getType())
