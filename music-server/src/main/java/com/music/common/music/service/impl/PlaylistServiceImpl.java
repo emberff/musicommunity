@@ -59,7 +59,10 @@ public class PlaylistServiceImpl implements IPlaylistService {
     public void addPlaylist(PlaylistAddReq req) {
         Long uid = RequestHolder.get().getUid();
         //直接建立一个歌单对应的群聊房间
-        Long roomId = roomService.addGroup(uid, new GroupAddReq());
+        GroupAddReq groupAddReq = new GroupAddReq();
+        groupAddReq.setName(req.getName());
+        groupAddReq.setAvatar(req.getCover());
+        Long roomId = roomService.addGroup(uid, groupAddReq);
         Playlist playlist = Playlist.builder()
                 .name(req.getName())
                 .type(PlayListTypeEnum.USER_PLAYLIST.getValue())
@@ -69,6 +72,7 @@ public class PlaylistServiceImpl implements IPlaylistService {
                 .plCreatorId(uid)
                 .build();
         playlistDao.save(playlist);
+
 
         //角色关注歌单
         UserPlaylist userPlaylist = UserPlaylist.builder()

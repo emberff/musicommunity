@@ -248,7 +248,7 @@ public class RoomAppServiceImpl implements RoomAppService {
     @Override
     @Transactional
     public Long addGroup(Long uid, GroupAddReq request) {
-        RoomGroup roomGroup = roomService.createGroupRoom(uid);
+        RoomGroup roomGroup = roomService.createGroupRoom(uid, request.getName(), request.getAvatar());
         if (CollectionUtils.isEmpty(request.getUidList())) {
             return roomGroup.getRoomId();
         }

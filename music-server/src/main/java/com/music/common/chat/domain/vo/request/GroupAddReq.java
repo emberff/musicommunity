@@ -20,8 +20,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GroupAddReq {
-    @NotNull
+
     @Size(min = 1, max = 50)
     @ApiModelProperty("邀请的uid")
     private List<Long> uidList;
+
+    @ApiModelProperty("群名称")
+    private String name;
+
+    @ApiModelProperty("群头像")
+    private String avatar;
 }

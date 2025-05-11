@@ -29,7 +29,8 @@ public interface RoomService {
     /**
      * 创建一个群聊房间
      */
-    RoomGroup createGroupRoom(Long uid);
+    RoomGroup createGroupRoom(Long uid, String name, String avatar);
+
 
 
 }

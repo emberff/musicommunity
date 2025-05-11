@@ -76,4 +76,12 @@ public class ChatAdapter {
         roomGroup.setRoomId(roomId);
         return roomGroup;
     }
+
+    public static RoomGroup buildGroupRoom2(Long roomId, String groupName, String groupavatar) {
+        RoomGroup roomGroup = new RoomGroup();
+        roomGroup.setName(groupName);
+        roomGroup.setAvatar(groupavatar);
+        roomGroup.setRoomId(roomId);
+        return roomGroup;
+    }
 }

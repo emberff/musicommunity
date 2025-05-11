@@ -76,13 +76,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public RoomGroup createGroupRoom(Long uid) {
+    public RoomGroup createGroupRoom(Long uid, String name, String avatar) {
         List<GroupMember> selfGroup = groupMemberDao.getSelfGroup(uid);
 //        AssertUtil.isEmpty(selfGroup, "每个人只能创建一个群");
         User user = userDao.getById(uid);
         Room room = createRoom(RoomTypeEnum.GROUP);
         //插入群
-        RoomGroup roomGroup = ChatAdapter.buildGroupRoom(user, room.getId());
+        RoomGroup roomGroup = ChatAdapter.buildGroupRoom2(room.getId(), name, avatar);
         roomGroupDao.save(roomGroup);
         //插入群主
         GroupMember leader = GroupMember.builder()
