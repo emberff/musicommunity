@@ -6,6 +6,7 @@ import com.music.common.chat.domain.entity.Message;
 import com.music.common.chat.domain.entity.msg.MessageExtra;
 import com.music.common.chat.domain.entity.msg.MsgRecall;
 import com.music.common.chat.domain.enums.MessageTypeEnum;
+import com.music.common.common.event.MessageRecallEvent;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.service.cache.UserCache;
@@ -64,7 +65,7 @@ public class RecallMsgHandler extends AbstractMsgHandler<Object> {
         update.setExtra(extra);
         messageDao.updateById(update);
         //TODO 引入消息撤回的发布/监听事件
-//        applicationEventPublisher.publishEvent(new MessageRecallEvent(this, new ChatMsgRecallDTO(message.getId(), message.getRoomId(), recallUid)));
+        applicationEventPublisher.publishEvent(new MessageRecallEvent(this, new ChatMsgRecallDTO(message.getId(), message.getRoomId(), recallUid)));
 
     }
 

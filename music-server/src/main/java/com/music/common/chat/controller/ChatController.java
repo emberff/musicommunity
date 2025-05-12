@@ -76,13 +76,13 @@ public class ChatController {
 //        return ApiResult.success();
 //    }
 
-//    @PutMapping("/msg/recall")
-//    @ApiOperation("撤回消息")
-//    @FrequencyControl(time = 20, count = 3, target = FrequencyControl.Target.UID)
-//    public ApiResult<Void> recallMsg(@Valid @RequestBody ChatMessageBaseReq request) {
-//        chatService.recallMsg(RequestHolder.get().getUid(), request);
-//        return ApiResult.success();
-//    }
+    @PutMapping("/msg/recall")
+    @ApiOperation("撤回消息")
+    @FrequencyControl(time = 20, count = 3, target = FrequencyControl.Target.UID)
+    public ApiResult<Void> recallMsg(@Valid @RequestBody ChatMessageBaseReq request) {
+        chatService.recallMsg(RequestHolder.get().getUid(), request);
+        return ApiResult.success();
+    }
 
     @GetMapping("/msg/read/page")
     @ApiOperation("消息的已读未读列表")

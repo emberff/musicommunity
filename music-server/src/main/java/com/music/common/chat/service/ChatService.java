@@ -79,7 +79,7 @@ public interface ChatService {
      * @param chatMessageMemberReq
      * @return
      */
-//    void recallMsg(Long uid, ChatMessageBaseReq request);
+    void recallMsg(Long uid, ChatMessageBaseReq request);
 
     List<ChatMemberListResp> getMemberList(ChatMessageMemberReq chatMessageMemberReq);
 

@@ -52,14 +52,14 @@ public class WSAdapter {
 //        return wsBaseResp;
 //    }
 
-//    public static WSBaseResp<?> buildMsgRecall(ChatMsgRecallDTO recallDTO) {
-//        WSBaseResp<WSMsgRecall> wsBaseResp = new WSBaseResp<>();
-//        wsBaseResp.setType(WSRespTypeEnum.RECALL.getType());
-//        WSMsgRecall recall = new WSMsgRecall();
-//        BeanUtils.copyProperties(recallDTO, recall);
-//        wsBaseResp.setData(recall);
-//        return wsBaseResp;
-//    }
+    public static WSBaseResp<?> buildMsgRecall(ChatMsgRecallDTO recallDTO) {
+        WSBaseResp<WSMsgRecall> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.RECALL.getType());
+        WSMsgRecall recall = new WSMsgRecall();
+        BeanUtils.copyProperties(recallDTO, recall);
+        wsBaseResp.setData(recall);
+        return wsBaseResp;
+    }
 
     public WSBaseResp<WSOnlineOfflineNotify> buildOnlineNotifyResp(User user) {
         WSBaseResp<WSOnlineOfflineNotify> wsBaseResp = new WSBaseResp<>();

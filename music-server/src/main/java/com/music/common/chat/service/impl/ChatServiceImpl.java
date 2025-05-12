@@ -24,6 +24,7 @@ import com.music.common.chat.service.adapter.RoomAdapter;
 import com.music.common.chat.service.helper.ChatMemberHelper;
 import com.music.common.chat.service.strategy.AbstractMsgHandler;
 import com.music.common.chat.service.strategy.MsgHandlerFactory;
+import com.music.common.chat.service.strategy.RecallMsgHandler;
 import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.common.domain.vo.req.CursorPageBaseReq;
 import com.music.common.common.domain.vo.resp.CursorPageBaseResp;
@@ -82,6 +83,8 @@ public class ChatServiceImpl implements ChatService {
     private GroupMemberDao groupMemberDao;
     @Autowired
     private RoomGroupDao roomGroupDao;
+    @Autowired
+    private RecallMsgHandler recallMsgHandler;
 
     /**
      * 发送消息
@@ -206,14 +209,14 @@ public class ChatServiceImpl implements ChatService {
 //        }
 //    }
 
-//    @Override
-//    public void recallMsg(Long uid, ChatMessageBaseReq request) {
-//        Message message = messageDao.getById(request.getMsgId());
-//        //校验能不能执行撤回
-//        checkRecall(uid, message);
-//        //执行消息撤回
-//        recallMsgHandler.recall(uid, message);
-//    }
+    @Override
+    public void recallMsg(Long uid, ChatMessageBaseReq request) {
+        Message message = messageDao.getById(request.getMsgId());
+        //校验能不能执行撤回
+        checkRecall(uid, message);
+        //执行消息撤回
+        recallMsgHandler.recall(uid, message);
+    }
 
     @Override
     @Cacheable(cacheNames = "member", key = "'memberList.'+#req.roomId")
@@ -275,18 +278,19 @@ public class ChatServiceImpl implements ChatService {
         }
     }
 
-//    private void checkRecall(Long uid, Message message) {
-//        AssertUtil.isNotEmpty(message, "消息有误");
-//        AssertUtil.notEqual(message.getType(), MessageTypeEnum.RECALL.getType(), "消息无法撤回");
+    private void checkRecall(Long uid, Message message) {
+        AssertUtil.isNotEmpty(message, "消息有误");
+        AssertUtil.notEqual(message.getType(), MessageTypeEnum.RECALL.getType(), "消息无法撤回");
+        //todo 权限校验
 //        boolean hasPower = iRoleService.hasPower(uid, RoleEnum.CHAT_MANAGER);
 //        if (hasPower) {
 //            return;
 //        }
-//        boolean self = Objects.equals(uid, message.getFromUid());
-//        AssertUtil.isTrue(self, "抱歉,您没有权限");
-//        long between = DateUtil.between(message.getCreateTime(), new Date(), DateUnit.MINUTE);
-//        AssertUtil.isTrue(between < 2, "覆水难收，超过2分钟的消息不能撤回哦~~");
-//    }
+        boolean self = Objects.equals(uid, message.getFromUid());
+        AssertUtil.isTrue(self, "抱歉,您没有权限");
+        long between = DateUtil.between(message.getCreateTime(), new Date(), DateUnit.MINUTE);
+        AssertUtil.isTrue(between < 2, "覆水难收，超过2分钟的消息不能撤回哦~~");
+    }
 
     public List<ChatMessageResp> getMsgRespBatch(List<Message> messages, Long receiveUid) {
         if (CollectionUtil.isEmpty(messages)) {
