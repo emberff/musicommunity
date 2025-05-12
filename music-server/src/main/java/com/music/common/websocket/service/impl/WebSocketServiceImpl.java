@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.music.common.common.event.UserOnlineEvent;
+import com.music.common.music.dao.PlaylistDao;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.service.LoginService;
@@ -47,6 +48,8 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Qualifier("websocketExecutor")
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
+    @Autowired
+    private PlaylistDao playlistDao;
 
     /**
      * 管理所有用户的连接,包括 (用户态/游客)

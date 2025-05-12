@@ -30,6 +30,10 @@ import com.music.common.common.domain.vo.req.CursorPageBaseReq;
 import com.music.common.common.domain.vo.resp.CursorPageBaseResp;
 import com.music.common.common.event.MessageSendEvent;
 import com.music.common.common.utils.AssertUtil;
+import com.music.common.music.dao.PlaylistDao;
+import com.music.common.music.dao.PowerDao;
+import com.music.common.music.domain.entity.Playlist;
+import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.enums.ChatActiveStatusEnum;
@@ -85,6 +89,10 @@ public class ChatServiceImpl implements ChatService {
     private RoomGroupDao roomGroupDao;
     @Autowired
     private RecallMsgHandler recallMsgHandler;
+    @Autowired
+    private PowerDao powerDao;
+    @Autowired
+    private PlaylistDao playlistDao;
 
     /**
      * 发送消息
@@ -281,11 +289,11 @@ public class ChatServiceImpl implements ChatService {
     private void checkRecall(Long uid, Message message) {
         AssertUtil.isNotEmpty(message, "消息有误");
         AssertUtil.notEqual(message.getType(), MessageTypeEnum.RECALL.getType(), "消息无法撤回");
-        //todo 权限校验
-//        boolean hasPower = iRoleService.hasPower(uid, RoleEnum.CHAT_MANAGER);
-//        if (hasPower) {
-//            return;
-//        }
+        Playlist playlist = playlistDao.getPlaylistIdbyRoomId(message.getRoomId());
+        Boolean checkPower = powerDao.checkPower(uid, playlist.getId(), PowerTypeEnum.ADMIN.getValue());
+        if (!checkPower) {
+            return;
+        }
         boolean self = Objects.equals(uid, message.getFromUid());
         AssertUtil.isTrue(self, "抱歉,您没有权限");
         long between = DateUtil.between(message.getCreateTime(), new Date(), DateUnit.MINUTE);

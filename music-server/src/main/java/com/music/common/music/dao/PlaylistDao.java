@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.music.domain.entity.Playlist;
+import com.music.common.music.domain.entity.PlaylistSong;
+import com.music.common.music.domain.entity.Power;
 import com.music.common.music.mapper.PlaylistMapper;
 import com.music.common.music.service.IPlaylistService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,6 +31,13 @@ public class PlaylistDao extends ServiceImpl<PlaylistMapper, Playlist>{
                 .eq(Playlist::getId, playlistId)
                 .set(Playlist::getStatus, NormalOrNoEnum.NOT_NORMAL.getStatus())
                 .update();
+    }
+
+    public Playlist getPlaylistIdbyRoomId(Long roomId) {
+        Playlist playlist = lambdaQuery()
+                .eq(Playlist::getRoomId, roomId)
+                .one();
+        return playlist;
     }
 
 }

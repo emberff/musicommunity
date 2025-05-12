@@ -12,6 +12,7 @@ import com.music.common.chat.service.adapter.MessageAdapter;
 import com.music.common.common.domain.enums.YesOrNoEnum;
 import com.music.common.common.utils.AssertUtil;
 import com.music.common.common.utils.discover.domain.UrlInfo;
+import com.music.common.music.dao.PowerDao;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.service.cache.UserCache;
@@ -37,6 +38,8 @@ public class TextMsgHandler extends AbstractMsgHandler<TextMsgReq> {
     private UserDao userDao;
     @Autowired
     private UserCache userCache;
+    @Autowired
+    private PowerDao powerDao;
 
 //    private static final PrioritizedUrlDiscover URL_TITLE_DISCOVER = new PrioritizedUrlDiscover();
 

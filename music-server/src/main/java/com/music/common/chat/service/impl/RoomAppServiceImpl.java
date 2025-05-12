@@ -26,15 +26,19 @@ import com.music.common.chat.service.adapter.RoomAdapter;
 import com.music.common.chat.service.cache.HotRoomCache;
 import com.music.common.chat.service.strategy.AbstractMsgHandler;
 import com.music.common.chat.service.strategy.MsgHandlerFactory;
+import com.music.common.common.domain.enums.UserTypeEnum;
 import com.music.common.common.domain.vo.req.CursorPageBaseReq;
 import com.music.common.common.domain.vo.resp.CursorPageBaseResp;
 import com.music.common.common.event.GroupMemberAddEvent;
 import com.music.common.common.exception.GroupErrorEnum;
 import com.music.common.common.utils.AssertUtil;
+import com.music.common.common.utils.RequestHolder;
+import com.music.common.music.dao.PlaylistDao;
 import com.music.common.music.dao.PowerDao;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.service.cache.UserCache;
+import com.music.common.user.service.impl.UserService;
 import com.music.common.websocket.domain.vo.resp.ChatMemberResp;
 import com.music.common.websocket.domain.vo.resp.WSBaseResp;
 import com.music.common.websocket.domain.vo.resp.WSMemberChange;
@@ -91,6 +95,8 @@ public class RoomAppServiceImpl implements RoomAppService {
     private RoomService roomService;
     @Autowired
     private WebSocketService webSocketService;
+    @Autowired
+    private PlaylistDao playlistDao;
 
     @Override
     public CursorPageBaseResp<ChatRoomResp> getContactPage(CursorPageBaseReq request, Long uid) {
@@ -260,10 +266,12 @@ public class RoomAppServiceImpl implements RoomAppService {
         return roomGroup.getRoomId();
     }
 
-    //todo 与歌单paower继承整合
     private boolean hasPower(GroupMember self) {
+        Long uid = RequestHolder.get().getUid();
+        User user = userDao.getById(uid);
         return Objects.equals(self.getRole(), GroupRoleEnum.LEADER.getType())
                 || Objects.equals(self.getRole(), GroupRoleEnum.MANAGER.getType())
+                || Objects.equals(user.getType(), UserTypeEnum.Admin.getValue())
 //                || iRoleService.hasPower(self.getUid(), RoleEnum.ADMIN);
                 ;
 

@@ -58,19 +58,19 @@ public class RoomController {
         return ApiResult.success(roomService.getMemberPage(request));
     }
 
-    @GetMapping("/group/member/list")
-    @ApiOperation("房间内的所有群成员列表-@专用")
-    public ApiResult<List<ChatMemberListResp>> getMemberList(@Valid ChatMessageMemberReq request) {
-        return ApiResult.success(roomService.getMemberList(request));
-    }
+//    @GetMapping("/group/member/list")
+//    @ApiOperation("房间内的所有群成员列表-@专用")
+//    public ApiResult<List<ChatMemberListResp>> getMemberList(@Valid ChatMessageMemberReq request) {
+//        return ApiResult.success(roomService.getMemberList(request));
+//    }
 
-    @DeleteMapping("/group/member")
-    @ApiOperation("移除成员")
-    public ApiResult<Void> delMember(@Valid @RequestBody MemberDelReq request) {
-        Long uid = RequestHolder.get().getUid();
-        roomService.delMember(uid, request);
-        return ApiResult.success();
-    }
+//    @DeleteMapping("/group/member")
+//    @ApiOperation("移除成员")
+//    public ApiResult<Void> delMember(@Valid @RequestBody MemberDelReq request) {
+//        Long uid = RequestHolder.get().getUid();
+//        roomService.delMember(uid, request);
+//        return ApiResult.success();
+//    }
 
 //    @DeleteMapping("/group/member/exit")
 //    @ApiOperation("退出群聊")
@@ -81,13 +81,13 @@ public class RoomController {
 //    }
 
     //TODO 新增和邀请与歌单管理模块集成
-    @PostMapping("/group")
-    @ApiOperation("新增群组")
-    public ApiResult<IdRespVO> addGroup(@Valid @RequestBody GroupAddReq request) {
-        Long uid = RequestHolder.get().getUid();
-        Long roomId = roomService.addGroup(uid, request);
-        return ApiResult.success(IdRespVO.id(roomId));
-    }
+//    @PostMapping("/group")
+//    @ApiOperation("新增群组")
+//    public ApiResult<IdRespVO> addGroup(@Valid @RequestBody GroupAddReq request) {
+//        Long uid = RequestHolder.get().getUid();
+//        Long roomId = roomService.addGroup(uid, request);
+//        return ApiResult.success(IdRespVO.id(roomId));
+//    }
 
     @PostMapping("/group/member")
     @ApiOperation("邀请好友")
