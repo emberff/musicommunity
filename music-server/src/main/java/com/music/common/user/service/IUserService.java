@@ -39,6 +39,7 @@ public interface IUserService{
      */
     UserInfoResp getUserInfo(Long uid);
 
+    Boolean isAdmin(Long userId);
 
 
 }

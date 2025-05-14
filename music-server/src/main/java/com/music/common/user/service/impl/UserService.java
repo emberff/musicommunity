@@ -1,6 +1,7 @@
 package com.music.common.user.service.impl;
 
 import com.music.common.common.constant.RedisKey;
+import com.music.common.common.domain.enums.UserTypeEnum;
 import com.music.common.common.exception.BusinessException;
 import com.music.common.common.utils.RedisUtils;
 import com.music.common.music.dao.PlaylistDao;
@@ -83,6 +84,13 @@ public class UserService implements IUserService {
     public UserInfoResp getUserInfo(Long uid) {
         User userInfo = userDao.getById(uid);
         return UserAdapter.buildUserInfoResp(userInfo);
+    }
+
+    @Override
+    public Boolean isAdmin(Long userId) {
+        User user = userDao.getById(userId);
+        return user.getType().equals(UserTypeEnum.Admin.getValue());
+
     }
 
 

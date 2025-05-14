@@ -8,16 +8,15 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.entity.Song;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
+import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.service.ISongService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -49,6 +48,12 @@ public class SongController {
     public ApiResult<PageBaseResp<SimpleSongListResp>> getSongPage(@Valid PageBaseReq req) {
          return ApiResult.success(songService.getSongPage(req));
     }
+
+//    @PostMapping("/add")
+//    @ApiOperation("新增歌曲")
+//    public ApiResult<Boolean> addSong(@Valid @RequestBody PlaylistAddReq req) {
+//
+//    }
 
     //TODO 1.歌曲(用户自制)增删改接口, 上传文件接口需要开启oss服务
 }

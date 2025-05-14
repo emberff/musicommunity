@@ -27,7 +27,7 @@ import javax.validation.Valid;
  */
 @RestController
 @Api(tags = "歌手相关接口")
-@RequestMapping("/singer")
+@RequestMapping("/capi/singer")
 public class SingerController {
     @Autowired
     private ISingerService singerService;
