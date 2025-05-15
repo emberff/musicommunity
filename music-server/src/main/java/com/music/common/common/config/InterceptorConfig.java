@@ -4,6 +4,7 @@ import com.music.common.common.interceptor.CollectorInterceptor;
 import com.music.common.common.interceptor.TokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -26,6 +27,19 @@ public class InterceptorConfig implements WebMvcConfigurer {
                 .addPathPatterns("/capi/**");
 //        registry.addInterceptor(blackInterceptor)
 //                .addPathPatterns("/capi/**");
+    }
+
+    /**
+     * 添加跨域配置，解决前端 CORS 报错
+     */
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**") // 所有请求路径都支持跨域
+                .allowedOriginPatterns("*") // 允许所有源（前端地址），可改成具体地址如 http://localhost:5173
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*") // 允许所有请求头
+                .allowCredentials(true) // 支持携带 Cookie 等凭证
+                .maxAge(3600); // 预检请求缓存时间
     }
 
 

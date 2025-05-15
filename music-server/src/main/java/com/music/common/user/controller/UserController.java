@@ -46,7 +46,7 @@ public class UserController {
     @GetMapping("/userInfo")
     @ApiOperation("获取用户信息")
 //    @FrequencyControl(time = 30, count = 3, target = FrequencyControl.Target.UID)
-    public ApiResult<Object> getUserInfo() {
+    public ApiResult<UserInfoResp> getUserInfo() {
         Long uid = RequestHolder.get().getUid();
         UserInfoResp userInfo = userService.getUserInfo(uid);
         return ApiResult.success(userInfo);
