@@ -182,7 +182,6 @@ public class PlaylistServiceImpl implements IPlaylistService {
             resp.setSingerName(singer.getName());
             pageResps.add(resp);
         }
-
         return PageBaseResp.init(playlistSongIPage, pageResps);
     }
 
