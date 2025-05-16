@@ -27,6 +27,12 @@ public class TokenInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            // 直接放行，返回true让Spring的CORS机制自动加响应头
+            response.setStatus(HttpServletResponse.SC_OK);
+            return true;
+        }
+
         String token = getToken(request);
         Long validUid = loginService.getValidUid(token);
         if (Objects.nonNull(validUid)) { // 用户有登录态
@@ -34,13 +40,13 @@ public class TokenInterceptor implements HandlerInterceptor {
         } else { // 用户未登录
             boolean isPublicURI = isPublicURI(request);
             if (!isPublicURI) {
-                // 401
                 HttpErrorEnum.ACCESS_DENIED.sendHttpError(response);
                 return false;
             }
         }
         return true;
     }
+
 
     private static boolean isPublicURI(HttpServletRequest request) {
         String requestURI = request.getRequestURI();

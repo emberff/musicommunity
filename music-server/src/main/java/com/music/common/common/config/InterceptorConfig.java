@@ -35,7 +35,7 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 所有请求路径都支持跨域
-                .allowedOriginPatterns("*") // 允许所有源（前端地址），可改成具体地址如 http://localhost:5173
+                .allowedOriginPatterns("http://localhost:5173") // 前端实际地址
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*") // 允许所有请求头
                 .allowCredentials(true) // 支持携带 Cookie 等凭证
