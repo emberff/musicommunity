@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.music.common.chat.domain.vo.request.GroupAddReq;
 import com.music.common.chat.service.RoomAppService;
+import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.exception.BusinessException;
@@ -26,6 +27,7 @@ import com.music.common.music.service.IPlaylistService;
 import com.music.common.music.service.IPlaylistSongService;
 import com.music.common.music.service.adapter.PlaylistAdapter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -183,6 +186,39 @@ public class PlaylistServiceImpl implements IPlaylistService {
             pageResps.add(resp);
         }
         return PageBaseResp.init(playlistSongIPage, pageResps);
+    }
+
+    @Override
+    public PageBaseResp<PlaylistPageResp> pagePlaylist2(PageBaseReq req) {
+        // 获取分页 Playlist 数据
+        IPage<Playlist> playlistIPage = playlistDao.getPage(req.plusPage());
+
+        // 将 Playlist 列表转换为 PlaylistPageResp 列表
+        List<PlaylistPageResp> pageRespList = playlistIPage.getRecords().stream()
+                .map(playlist -> {
+                    PlaylistPageResp resp = new PlaylistPageResp();
+                    BeanUtils.copyProperties(playlist, resp); // Apache Commons BeanUtils 或 Spring BeanUtils
+                    return resp;
+                })
+                .collect(Collectors.toList());
+
+        // 使用转换后的列表初始化分页响应
+        return PageBaseResp.init(playlistIPage, pageRespList);
+    }
+
+
+
+    @Override
+    public Boolean followPlaylist(IdReqVO reqVO) {
+        Playlist playlist = playlistDao.getById(reqVO.getId());
+        playlist.setPlFollowNumber(playlist.getPlFollowNumber() + 1);
+        playlistDao.save(playlist);
+
+        Long uid = RequestHolder.get().getUid();
+        UserPlaylist userPlaylist = new UserPlaylist();
+        userPlaylist.setUserId(uid);
+        userPlaylist.setPlaylistId(reqVO.getId());
+        return userPlaylistDao.save(userPlaylist);
     }
 
 

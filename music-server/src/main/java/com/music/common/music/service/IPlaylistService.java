@@ -1,5 +1,6 @@
 package com.music.common.music.service;
 
+import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
@@ -58,7 +59,7 @@ public interface IPlaylistService{
     void deteteSongToPlaylist(SongToPlaylistReq req);
 
     /**
-     * 歌单信息分页
+     * 用户关注的歌单信息分页
      * @param uid
      * @param req
      * @return
@@ -71,4 +72,16 @@ public interface IPlaylistService{
      * @return
      */
     PageBaseResp<PlaylistSongPageResp> pagePlaylistSong(PlaylistSongPageReq req);
+
+    /**
+     * 无筛选的歌单分页
+     * @param req
+     * @return
+     */
+    PageBaseResp<PlaylistPageResp> pagePlaylist2(PageBaseReq req);
+
+    /**
+     * 用户关注歌单
+     */
+    Boolean followPlaylist(IdReqVO reqVO);
 }

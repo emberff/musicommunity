@@ -9,6 +9,9 @@ import com.music.common.music.service.ISongService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * <p>
  * 歌曲表 服务实现类
@@ -23,5 +26,12 @@ public class SongDao extends ServiceImpl<SongMapper, Song>{
     public IPage<Song> getPage(Page page) {
         return lambdaQuery()
                 .page(page);
+    }
+
+    public List<Song> selectBatchIds(List<Long> pagedSongIds) {
+        if (pagedSongIds == null || pagedSongIds.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return super.listByIds(pagedSongIds); // 调用 ServiceImpl 的方法
     }
 }

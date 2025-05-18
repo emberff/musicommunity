@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Getter
 public enum OssSceneEnum {
     CHAT(1, "聊天", "/chat"),
-    EMOJI(2, "表情包", "emoji"),
+    EMOJI(2, "表情包", "/emoji"),
     MUSIC(3, "音乐", "/music")
     ;
 

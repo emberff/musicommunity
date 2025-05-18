@@ -1,6 +1,7 @@
 package com.music.common.music.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.domain.vo.req.PageBaseReq;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -38,6 +40,8 @@ public class SongServiceImpl implements ISongService {
     private PlaylistDao playlistDao;
     @Autowired
     private SingerDao singerDao;
+    @Autowired
+    private SongRecDao songRecDao;
 
 
     @Override
@@ -53,8 +57,10 @@ public class SongServiceImpl implements ISongService {
 
     @Override
     public PageBaseResp<SimpleSongListResp> getSongPage(PageBaseReq req) {
-        List<Song> songs = songDao.getPage(req.plusPage()).getRecords();
-        return SongAdapter.buildSimpleSongListRespPage(songs, req.plusPage());
+        IPage<Song> pageResult = songDao.getPage(req.plusPage()); // 这个 pageResult 包含 total、records 等
+        List<Song> songs = pageResult.getRecords();
+        return SongAdapter.buildSimpleSongListRespPage(songs, pageResult); // 传分页对象进去
+
     }
 
     @Override
@@ -81,6 +87,46 @@ public class SongServiceImpl implements ISongService {
         song.setUrl(req.getUrl());
         return songDao.updateById(song);
     }
+
+    @Override
+    public PageBaseResp<SimpleSongListResp> getSongRecPage(Long uid, PageBaseReq req) {
+        // 1. 查询用户推荐的歌曲ID列表
+        List<Long> songIds = songRecDao.getByUid(uid);
+        if (CollUtil.isEmpty(songIds)) {
+            return PageBaseResp.empty(); // 返回空分页
+        }
+
+        // 2. 对songIds分页
+        int pageNo = req.getPageNo();
+        int pageSize = req.getPageSize();
+        int fromIndex = (pageNo - 1) * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, songIds.size());
+
+        if (fromIndex >= songIds.size()) {
+            return PageBaseResp.empty(); // 页码超出范围
+        }
+
+        List<Long> pagedSongIds = songIds.subList(fromIndex, toIndex);
+
+        // 3. 查询对应的歌曲详情
+        List<Song> songList = songDao.selectBatchIds(pagedSongIds);
+
+        // 4. 转换为 SimpleSongListResp
+        List<SimpleSongListResp> respList = songList.stream()
+                .map(song -> {
+                    SimpleSongListResp resp = new SimpleSongListResp();
+                    resp.setId(song.getId());
+                    resp.setName(song.getName());
+                    resp.setCover(song.getCover());
+                    resp.setUrl(song.getUrl());
+                    return resp;
+                })
+                .collect(Collectors.toList());
+
+        // 5. 返回分页响应
+        return PageBaseResp.init(pageNo, pageSize, (long) songIds.size(), respList);
+    }
+
 
 
 }

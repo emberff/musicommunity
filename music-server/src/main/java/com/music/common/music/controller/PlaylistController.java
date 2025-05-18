@@ -18,6 +18,7 @@ import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
 import com.music.common.music.service.IPlaylistService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,12 @@ public class PlaylistController {
         return ApiResult.success();
     }
 
+    @PutMapping("/follow")
+    @ApiOperation("收藏歌单")
+    public ApiResult<Boolean> followPlaylist(@Valid @RequestBody IdReqVO reqVO) {
+        return ApiResult.success(playlistService.followPlaylist(reqVO));
+    }
+
     @DeleteMapping("/delete")
     @ApiOperation("删除歌单")
     public ApiResult<Void> deletePlaylist(@Valid @RequestBody IdReqVO req) {
@@ -66,9 +73,9 @@ public class PlaylistController {
         return ApiResult.success(playlistService.getPlaylistDetail(req.getId()));
     }
 
-    @GetMapping("/page")
+    @GetMapping("/user/page")
     @ApiOperation("用户歌单分页")
-    public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
+    public ApiResult<PageBaseResp<PlaylistPageResp>> userPage(@Valid PageBaseReq req) {
         Long uid = RequestHolder.get().getUid();
         return ApiResult.success(playlistService.pagePlaylist(uid, req));
     }
@@ -89,11 +96,15 @@ public class PlaylistController {
 
     @GetMapping("/song/page")
     @ApiOperation("用户歌单内歌曲分页")
-    public ApiResult<PageBaseResp<PlaylistSongPageResp>> page(@Valid PlaylistSongPageReq req) {
+    public ApiResult<PageBaseResp<PlaylistSongPageResp>> songPage(@Valid PlaylistSongPageReq req) {
         return ApiResult.success(playlistService.pagePlaylistSong(req));
     }
 
-
+    @GetMapping("/page")
+    @ApiOperation("歌单分页")
+    public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
+        return ApiResult.success(playlistService.pagePlaylist2(req));
+    }
 
 }
 

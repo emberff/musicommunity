@@ -25,4 +25,7 @@ public class SimpleSongListResp {
 
     @ApiModelProperty("歌曲封面")
     private String cover;
+
+    @ApiModelProperty("歌曲url")
+    private String url;
 }

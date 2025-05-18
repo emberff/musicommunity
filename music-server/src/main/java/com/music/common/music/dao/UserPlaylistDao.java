@@ -24,4 +24,9 @@ public class UserPlaylistDao extends ServiceImpl<UserPlaylistMapper, UserPlaylis
                 .eq(UserPlaylist::getUserId, uid)
                 .page(page);
     }
+
+    public IPage<UserPlaylist> getPage(Page page) {
+        return lambdaQuery()
+                .page(page);
+    }
 }

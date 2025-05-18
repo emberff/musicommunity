@@ -1,6 +1,7 @@
 package com.music.common.music.service.adapter;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.entity.Playlist;
@@ -30,13 +31,14 @@ public class SongAdapter {
         return songDetailResp;
     }
 
-    public static PageBaseResp<SimpleSongListResp> buildSimpleSongListRespPage(List<Song> songs, Page page) {
+    public static PageBaseResp<SimpleSongListResp> buildSimpleSongListRespPage(List<Song> songs, IPage page) {
         List<SimpleSongListResp> lists = new ArrayList<>();
         for (Song song : songs) {
             SimpleSongListResp simpleSongListResp = new SimpleSongListResp();
             BeanUtil.copyProperties(song, simpleSongListResp);
             lists.add(simpleSongListResp);
         }
-        return PageBaseResp.init(page, lists);
+        return PageBaseResp.init(page, lists); // 正确调用，page.getTotal() 才有值
     }
+
 }

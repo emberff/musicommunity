@@ -2,7 +2,11 @@ package com.music.common.music.controller;
 
 
 import com.music.common.common.domain.vo.req.IdReqVO;
+import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.ApiResult;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
+import com.music.common.common.utils.RequestHolder;
+import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.SingerDetailResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
 import com.music.common.music.service.ISingerService;
@@ -10,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.stereotype.Controller;
@@ -39,6 +44,14 @@ public class SingerController {
         return ApiResult.success(singerDetail);
     }
 
-    //TODO 1.歌手表字段 有待完善 2.用户关注歌手表未建 3.其他相关功能待探讨
+    @GetMapping("/page")
+    @ApiOperation("歌手分页")
+    public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
+        return ApiResult.success(singerService.pageSinger(req));
+    }
+
+//    @PutMapping("/follow")
+
+    //TODO 1.歌手表字段 有待完善 2.用户关注歌手表未建
 }
 

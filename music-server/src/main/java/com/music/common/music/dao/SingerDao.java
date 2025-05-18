@@ -1,5 +1,7 @@
 package com.music.common.music.dao;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.music.domain.entity.Singer;
 import com.music.common.music.mapper.SingerMapper;
 import com.music.common.music.service.ISingerService;
@@ -16,5 +18,10 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SingerDao extends ServiceImpl<SingerMapper, Singer>{
+
+    public IPage<Singer> getPage(Page<Singer> page) {
+        return lambdaQuery()
+                .page(page);
+    }
 
 }

@@ -24,4 +24,6 @@ public interface ISongService{
     Boolean saveSong(SongAddReq req);
 
     Boolean updateSong(SongUpdateReq req);
+
+    PageBaseResp<SimpleSongListResp> getSongRecPage(Long uid, PageBaseReq req);
 }
