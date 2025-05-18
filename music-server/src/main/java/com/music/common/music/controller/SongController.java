@@ -1,6 +1,5 @@
 package com.music.common.music.controller;
 
-
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.ApiResult;
@@ -9,6 +8,8 @@ import com.music.common.music.domain.entity.Song;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
+import com.music.common.music.domain.vo.request.SongAddReq;
+import com.music.common.music.domain.vo.request.SongUpdateReq;
 import com.music.common.music.service.ISongService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,12 +50,15 @@ public class SongController {
          return ApiResult.success(songService.getSongPage(req));
     }
 
-//    @PostMapping("/add")
-//    @ApiOperation("新增歌曲")
-//    public ApiResult<Boolean> addSong(@Valid @RequestBody PlaylistAddReq req) {
-//
-//    }
+    @PostMapping("/add")
+    @ApiOperation("新增歌曲")
+    public ApiResult<Boolean> addSong(@Valid @RequestBody SongAddReq req) {
+        return ApiResult.success(songService.saveSong(req));
+    }
 
-    //TODO 1.歌曲(用户自制)增删改接口, 上传文件接口需要开启oss服务
+    @PostMapping("update")
+    @ApiOperation("修改歌曲")
+    private ApiResult<Boolean> updateSong(@Valid @RequestBody SongUpdateReq req) {
+        return ApiResult.success(songService.updateSong(req));
+    }
 }
-

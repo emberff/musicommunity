@@ -22,6 +22,9 @@ public class PlaylistSongPageResp {
     @ApiModelProperty(value = "歌曲名")
     private String name;
 
+    @ApiModelProperty(value = "歌曲类型")
+    private Integer type;
+
     @ApiModelProperty(value = "封面")
     private String cover;
 

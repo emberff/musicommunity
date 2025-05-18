@@ -27,8 +27,14 @@ public class Song implements Serializable {
     /**
      * 歌曲id
      */
-      @TableId(value = "id", type = IdType.AUTO)
+      @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
+
+    /**
+     * 歌曲来源 0用户上传 1jamendoApi
+     */
+    @TableField(value = "type")
+    private Integer type;
 
     /**
      * 歌手id

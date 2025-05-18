@@ -20,5 +20,8 @@ public class UserInfoResp {
     @ApiModelProperty(value = "性别 1为男性，2为女性")
     private Integer sex;
 
+    @ApiModelProperty(value = "头像")
+    private String avatar;
+
 
 }

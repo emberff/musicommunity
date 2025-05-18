@@ -1,5 +1,6 @@
 package com.music.common.music.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.domain.vo.req.PageBaseReq;
@@ -9,10 +10,13 @@ import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.dao.*;
 import com.music.common.music.domain.entity.*;
 import com.music.common.music.domain.enums.PowerTypeEnum;
+import com.music.common.music.domain.enums.SongTypeEnum;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
+import com.music.common.music.domain.vo.request.SongAddReq;
+import com.music.common.music.domain.vo.request.SongUpdateReq;
 import com.music.common.music.service.IPlaylistService;
 import com.music.common.music.service.ISongService;
 import com.music.common.music.service.adapter.PlaylistAdapter;
@@ -51,6 +55,31 @@ public class SongServiceImpl implements ISongService {
     public PageBaseResp<SimpleSongListResp> getSongPage(PageBaseReq req) {
         List<Song> songs = songDao.getPage(req.plusPage()).getRecords();
         return SongAdapter.buildSimpleSongListRespPage(songs, req.plusPage());
+    }
+
+    @Override
+    public Boolean saveSong(SongAddReq req) {
+        Song song = new Song();
+        if (req.getType().equals(SongTypeEnum.JAMENDO_API.getValue())) {
+            AssertUtil.isNotEmpty(req.getId(), "API歌曲id不可为空!");
+            song.setCover("https://usercontent.jamendo.com?type=album&id=" +req.getId() + "&width=300&trackid=2245166");
+        }
+        song.setId(req.getId());
+        song.setName(req.getName());
+        song.setUrl(req.getUrl());
+
+        return songDao.save(song);
+    }
+
+    @Override
+    public Boolean updateSong(SongUpdateReq req) {
+        AssertUtil.isNotEmpty(req.getId(), "id不可为空!");
+        Song song = songDao.getById(req.getId());
+        song.setName(req.getName());
+        song.setSingerId(req.getSingerId());
+        song.setCover(req.getCover());
+        song.setUrl(req.getUrl());
+        return songDao.updateById(song);
     }
 
 

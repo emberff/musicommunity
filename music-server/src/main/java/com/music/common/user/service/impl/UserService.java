@@ -5,9 +5,14 @@ import com.music.common.common.domain.enums.UserTypeEnum;
 import com.music.common.common.exception.BusinessException;
 import com.music.common.common.utils.RedisUtils;
 import com.music.common.music.dao.PlaylistDao;
+import com.music.common.music.dao.PowerDao;
+import com.music.common.music.dao.UserPlaylistDao;
 import com.music.common.music.domain.entity.Playlist;
+import com.music.common.music.domain.entity.Power;
+import com.music.common.music.domain.entity.UserPlaylist;
 import com.music.common.music.domain.enums.IsPublicEnum;
 import com.music.common.music.domain.enums.PlayListTypeEnum;
+import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
@@ -30,6 +35,10 @@ public class UserService implements IUserService {
     private LoginService loginService;
     @Autowired
     private PlaylistDao playlistDao;
+    @Autowired
+    private UserPlaylistDao userPlaylistDao;
+    @Autowired
+    private PowerDao powerDao;
 
     @Override
     public UserLoginResp register(UserRegisterReq userInfo) {
@@ -48,9 +57,23 @@ public class UserService implements IUserService {
         Playlist playlist = Playlist.builder()
                 .type(PlayListTypeEnum.USER_FAVOURITE.getValue())
                 .isPublic(IsPublicEnum.IS_PUBLIC.getValue())
+                .name(user.getName() + "喜欢的音乐")
                 .plCreatorId(user.getId())
                 .build();
         playlistDao.save(playlist);
+
+        UserPlaylist userPlaylist = UserPlaylist.builder()
+                        .playlistId(playlist.getId())
+                        .userId(user.getId())
+                        .build();
+        userPlaylistDao.save(userPlaylist);
+
+        Power power = Power.builder()
+                .userId(user.getId())
+                .powerType(PowerTypeEnum.CREATOR.getValue())
+                .playlistId(playlist.getId())
+                .build();
+        powerDao.save(power);
 
         String token = loginService.login(user.getId());
         UserLoginResp userLoginResp = new UserLoginResp();

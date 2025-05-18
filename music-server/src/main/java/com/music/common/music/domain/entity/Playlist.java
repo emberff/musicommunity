@@ -30,7 +30,7 @@ public class Playlist implements Serializable {
     /**
      * 歌单id
      */
-      @TableId(value = "id", type = IdType.AUTO)
+      @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

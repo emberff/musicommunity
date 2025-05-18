@@ -31,7 +31,7 @@ public class OssController {
      * @param req
      * @return
      */
-    @GetMapping("/upload/url")
+    @GetMapping("/public/upload/url")
     @ApiOperation("获取临时上传链接")
     public ApiResult<OssResp> getUploadUrl(@Valid UploadUrlReq req) {
         return ApiResult.success(ossService.getUploadUrl(RequestHolder.get().getUid(), req));

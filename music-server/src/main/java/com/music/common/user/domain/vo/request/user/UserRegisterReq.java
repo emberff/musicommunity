@@ -22,9 +22,9 @@ public class UserRegisterReq {
     @NotNull
     private String name;
 
-    @ApiModelProperty(value = "头像",required = true)
+    @ApiModelProperty(value = "头像",required = false)
     private String avatar;
 
-    @ApiModelProperty(value = "性别 1为男性，2为女性", required = true)
+    @ApiModelProperty(value = "性别 1为男性，2为女性", required = false)
     private Integer sex;
 }
