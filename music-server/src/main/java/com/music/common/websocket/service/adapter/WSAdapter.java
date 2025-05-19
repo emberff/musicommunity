@@ -92,6 +92,7 @@ public class WSAdapter {
         info.setUid(user.getId());
         info.setActiveStatus(ChatActiveStatusEnum.ONLINE.getStatus());
         info.setLastOptTime(user.getLastOptTime());
+        info.setName(user.getName());
         return info;
     }
 

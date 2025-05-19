@@ -10,6 +10,8 @@ import com.music.common.chat.domain.enums.RoomTypeEnum;
 import com.music.common.chat.domain.vo.response.ChatMessageResp;
 import com.music.common.chat.service.ChatService;
 import com.music.common.common.event.MessageSendEvent;
+import com.music.common.user.dao.UserDao;
+import com.music.common.user.domain.entity.User;
 import com.music.common.user.service.cache.UserCache;
 import com.music.common.websocket.domain.vo.resp.WSBaseResp;
 import com.music.common.websocket.service.WebSocketService;
@@ -51,6 +53,8 @@ public class MessageSendListener {
     private RoomGroupDao roomGroupDao;
     @Autowired
     private WebSocketService webSocketService;
+    @Autowired
+    private UserDao userDao;
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT, classes = MessageSendEvent.class, fallbackExecution = true)
     public void messageRoute(MessageSendEvent event) {
@@ -58,6 +62,11 @@ public class MessageSendListener {
         Message message = messageDao.getById(msgId);
         Room room = roomDao.getById(message.getRoomId());
         ChatMessageResp msgResp = chatService.getMsgResp(message, null);
+
+        msgResp.getFromUser().setFromUserAvatar(
+                userDao.getById(message.getFromUid()).getAvatar()
+        );
+
 
         // 所有房间更新房间最新消息
         roomDao.refreshActiveTime(room.getId(), message.getId(), message.getCreateTime());

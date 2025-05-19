@@ -6,6 +6,7 @@ import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONUtil;
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.music.common.common.event.UserOfflineEvent;
 import com.music.common.common.event.UserOnlineEvent;
 import com.music.common.music.dao.PlaylistDao;
 import com.music.common.user.dao.UserDao;
@@ -74,6 +75,10 @@ public class WebSocketServiceImpl implements WebSocketService {
     @Override
     public void remove(Channel channel) {
         ONLINE_WS_MAP.remove(channel);
+        String token = NettyUtil.getAttr(channel, NettyUtil.TOKEN);
+        Long uid = loginService.getValidUid(token);
+        User user = userDao.getById(uid);
+        applicationEventPublisher.publishEvent(new UserOfflineEvent(this, user));
     }
 
     @Override
