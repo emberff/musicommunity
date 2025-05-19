@@ -1,7 +1,10 @@
 package com.music.common.user.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.constant.RedisKey;
 import com.music.common.common.domain.enums.UserTypeEnum;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.exception.BusinessException;
 import com.music.common.common.utils.RedisUtils;
 import com.music.common.music.dao.PlaylistDao;
@@ -16,6 +19,8 @@ import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
+import com.music.common.user.domain.vo.request.user.UserSearchPageReq;
+import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
 import com.music.common.user.service.IUserService;
@@ -25,6 +30,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.internal.util.StringHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Slf4j
 @Service
 public class UserService implements IUserService {
@@ -114,6 +124,22 @@ public class UserService implements IUserService {
         User user = userDao.getById(userId);
         return user.getType().equals(UserTypeEnum.Admin.getValue());
 
+    }
+
+    @Override
+    public PageBaseResp<FriendResp> searchUser(UserSearchPageReq req) {
+        Page<User> userPage = userDao.searchUser(req);
+        List<User> users = userPage.getRecords();
+        List<FriendResp> resps = users.stream()
+                .map(user -> {
+                    FriendResp resp = new FriendResp();
+                    BeanUtil.copyProperties(user, resp); // 复制其他字段
+                    resp.setUid(user.getId()); // 映射 id → uid
+                    return resp;
+                })
+                .collect(Collectors.toList());
+
+        return PageBaseResp.init(userPage, resps);
     }
 
 

@@ -67,6 +67,12 @@ public class User implements Serializable {
     private Integer sex;
 
     /**
+     * 个性签名
+     */
+    @TableField("sign")
+    private String sign;
+
+    /**
      * 在线状态 1 在线, 2 离线
      */
     @TableField("active_status")

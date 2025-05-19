@@ -2,8 +2,12 @@ package com.music.common.user.controller;
 
 import com.music.common.common.annotation.FrequencyControl;
 import com.music.common.common.domain.vo.resp.ApiResult;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.RequestHolder;
+import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
+import com.music.common.user.domain.vo.request.user.UserSearchPageReq;
+import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
 import com.music.common.user.service.IUserService;
@@ -13,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,5 +55,11 @@ public class UserController {
         Long uid = RequestHolder.get().getUid();
         UserInfoResp userInfo = userService.getUserInfo(uid);
         return ApiResult.success(userInfo);
+    }
+
+    @GetMapping("/getUser")
+    @ApiOperation("搜索用户")
+    public ApiResult<PageBaseResp<FriendResp>> searchUser(@Valid UserSearchPageReq req) {
+        return ApiResult.success(userService.searchUser(req));
     }
 }
