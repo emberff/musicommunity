@@ -37,11 +37,14 @@ public class FriendAdapter {
         return userApplyNew;
     }
 
-    public static List<FriendApplyResp> buildFriendApplyList(List<UserApply> records, Map<Long, String> uidNameMap) {
+    public static List<FriendApplyResp> buildFriendApplyList(List<UserApply> records, Map<Long, User> users) {
         return records.stream().map(userApply -> {
             FriendApplyResp friendApplyResp = new FriendApplyResp();
             friendApplyResp.setUid(userApply.getUid());
-            friendApplyResp.setName(uidNameMap.getOrDefault(userApply.getUid(), "未知用户")); // 设置名称
+            User user = users.get(userApply.getUid());
+            friendApplyResp.setName(user.getName()); // 设置名称
+            friendApplyResp.setSex(user.getSex());
+            friendApplyResp.setAvatar(user.getAvatar());
             friendApplyResp.setType(userApply.getType());
             friendApplyResp.setApplyId(userApply.getId());
             friendApplyResp.setMsg(userApply.getMsg());

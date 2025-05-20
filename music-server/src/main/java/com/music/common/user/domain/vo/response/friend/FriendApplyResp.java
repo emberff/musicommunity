@@ -26,6 +26,12 @@ public class FriendApplyResp {
     @ApiModelProperty("申请人姓名")
     private String name;
 
+    @ApiModelProperty("性别")
+    private Integer sex;
+
+    @ApiModelProperty("头像")
+    private String avatar;
+
     @ApiModelProperty("申请类型 1加好友")
     private Integer type;
 

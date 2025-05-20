@@ -144,14 +144,14 @@ public class FriendServiceImpl implements FriendService {
                 .collect(Collectors.toList());
         // 2. 查询用户信息
         Map<Long, User> users = userDao.getBatch(uidList);
-        // 3. 构造 uid -> name 映射
-        Map<Long, String> uidNameMap = users.values().stream()
-                .collect(Collectors.toMap(User::getId, User::getName));
+//        // 3. 构造 uid -> name 映射
+//        Map<Long, String> uidNameMap = users.values().stream()
+//                .collect(Collectors.toMap(User::getId, User::getName));
 
         //将这些申请列表设为已读
         readApples(uid, userApplyIPage);
         //返回消息
-        return PageBaseResp.init(userApplyIPage, FriendAdapter.buildFriendApplyList(userApplyIPage.getRecords(), uidNameMap));
+        return PageBaseResp.init(userApplyIPage, FriendAdapter.buildFriendApplyList(userApplyIPage.getRecords(), users));
     }
 
     private void readApples(Long uid, IPage<UserApply> userApplyIPage) {
