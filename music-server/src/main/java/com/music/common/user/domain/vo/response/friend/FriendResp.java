@@ -21,8 +21,20 @@ public class FriendResp {
     @ApiModelProperty("好友uid")
     private Long uid;
     /**
-     * @see com.abin.mallchat.common.user.domain.enums.ChatActiveStatusEnum
+     * @see ChatActiveStatusEnum
      */
     @ApiModelProperty("在线状态 1在线 2离线")
     private Integer activeStatus;
+
+    @ApiModelProperty("个性签名")
+    private String sign;
+
+    @ApiModelProperty("头像")
+    private String avatar;
+
+    @ApiModelProperty("昵称")
+    private String name;
+
+    @ApiModelProperty("性别")
+    private Integer sex;
 }

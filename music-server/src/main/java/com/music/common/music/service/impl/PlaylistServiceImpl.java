@@ -76,7 +76,6 @@ public class PlaylistServiceImpl implements IPlaylistService {
                 .build();
         playlistDao.save(playlist);
 
-
         //角色关注歌单
         UserPlaylist userPlaylist = UserPlaylist.builder()
                 .userId(uid)
@@ -219,6 +218,12 @@ public class PlaylistServiceImpl implements IPlaylistService {
         userPlaylist.setUserId(uid);
         userPlaylist.setPlaylistId(reqVO.getId());
         return userPlaylistDao.save(userPlaylist);
+    }
+
+    @Override
+    public PageBaseResp<PlaylistPageResp> pageRecPlaylist(Long uid, PageBaseReq req) {
+        return null;
+
     }
 
 

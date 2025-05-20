@@ -84,4 +84,6 @@ public interface IPlaylistService{
      * 用户关注歌单
      */
     Boolean followPlaylist(IdReqVO reqVO);
+
+    PageBaseResp<PlaylistPageResp> pageRecPlaylist(Long uid, PageBaseReq req);
 }

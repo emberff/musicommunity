@@ -28,6 +28,10 @@ public class ChatMessageResp {
     public static class UserInfo {
         @ApiModelProperty("用户id")
         private Long uid;
+        @ApiModelProperty("发送者头像")
+        private String fromUserAvatar;
+        @ApiModelProperty("用户名")
+        private String fromUserName;
     }
 
     @Data

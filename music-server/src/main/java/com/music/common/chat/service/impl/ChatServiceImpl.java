@@ -304,9 +304,33 @@ public class ChatServiceImpl implements ChatService {
         if (CollectionUtil.isEmpty(messages)) {
             return new ArrayList<>();
         }
-        //查询消息标志
-        List<MessageMark> msgMark = messageMarkDao.getValidMarkByMsgIdBatch(messages.stream().map(Message::getId).collect(Collectors.toList()));
-        return MessageAdapter.buildMsgResp(messages, msgMark, receiveUid);
+
+        // 查询消息标志
+        List<Long> messageIds = messages.stream()
+                .map(Message::getId)
+                .collect(Collectors.toList());
+        List<MessageMark> msgMarkList = messageMarkDao.getValidMarkByMsgIdBatch(messageIds);
+
+        // 提取 fromUid 列表并去重
+        List<Long> fromUids = messages.stream()
+                .map(Message::getFromUid)
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 批量获取用户信息并构建 uid -> User 映射
+        Map<Long, User> uidUserMap = userDao.getBatch(fromUids);
+
+        // 构建 uid -> avatar 映射
+        Map<Long, String> uidAvatarMap = uidUserMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getAvatar()));
+        // 构建 uid -> name 映射
+        Map<Long, String> uidNameMap = uidUserMap.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getName()));
+
+        // 构建响应
+        return MessageAdapter.buildMsgResp(messages, msgMarkList, receiveUid, uidAvatarMap, uidNameMap);
     }
+
 
 }

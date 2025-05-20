@@ -23,6 +23,9 @@ public class FriendApplyResp {
     @ApiModelProperty("申请人uid")
     private Long uid;
 
+    @ApiModelProperty("申请人姓名")
+    private String name;
+
     @ApiModelProperty("申请类型 1加好友")
     private Integer type;
 

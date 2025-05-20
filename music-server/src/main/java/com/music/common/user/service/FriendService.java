@@ -13,6 +13,8 @@ import com.music.common.user.domain.vo.response.friend.FriendCheckResp;
 import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.friend.FriendUnreadResp;
 
+import java.util.List;
+
 /**
  * @author : limeng
  * @description : 好友
@@ -71,4 +73,6 @@ public interface FriendService {
     void deleteFriend(Long uid, Long friendUid);
 
     CursorPageBaseResp<FriendResp> friendList(Long uid, CursorPageBaseReq request);
+
+    List<Long> friendUids(Long uid);
 }

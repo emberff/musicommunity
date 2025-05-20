@@ -35,15 +35,28 @@ public class MessageAdapter {
 
     }
 
-    public static List<ChatMessageResp> buildMsgResp(List<Message> messages, List<MessageMark> msgMark, Long receiveUid) {
-        Map<Long, List<MessageMark>> markMap = msgMark.stream().collect(Collectors.groupingBy(MessageMark::getMsgId));
-        return messages.stream().map(a -> {
-            ChatMessageResp resp = new ChatMessageResp();
-            resp.setFromUser(buildFromUser(a.getFromUid()));
-            resp.setMessage(buildMessage(a, markMap.getOrDefault(a.getId(), new ArrayList<>()), receiveUid));
-            return resp;
-        })
-                .sorted(Comparator.comparing(a -> a.getMessage().getSendTime()))//帮前端排好序，更方便它展示
+    public static List<ChatMessageResp> buildMsgResp(List<Message> messages, List<MessageMark> msgMark, Long receiveUid, Map<Long, String> uidAvatarMap, Map<Long, String> uidNameMap) {
+        Map<Long, List<MessageMark>> markMap = msgMark.stream()
+                .collect(Collectors.groupingBy(MessageMark::getMsgId));
+
+        return messages.stream()
+                .map(message -> {
+                    ChatMessageResp resp = new ChatMessageResp();
+                    // 构建 fromUser 并设置头像
+                    ChatMessageResp.UserInfo fromUser = buildFromUser(message.getFromUid());
+                    fromUser.setFromUserAvatar(uidAvatarMap.getOrDefault(message.getFromUid(), null));
+                    fromUser.setFromUserName(uidNameMap.getOrDefault(message.getFromUid(), null));
+                    resp.setFromUser(fromUser);
+                    // 构建 message 响应内容
+                    resp.setMessage(buildMessage(
+                            message,
+                            markMap.getOrDefault(message.getId(), new ArrayList<>()),
+                            receiveUid
+                    ));
+                    return resp;
+                })
+                // 帮前端排好序，更方便它展示
+                .sorted(Comparator.comparing(a -> a.getMessage().getSendTime()))
                 .collect(Collectors.toList());
     }
 

@@ -9,6 +9,7 @@ import com.music.common.user.mapper.UserFriendMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -48,5 +49,18 @@ public class UserFriendDao extends ServiceImpl<UserFriendMapper, UserFriend> {
                 .select(UserFriend::getId)
                 .list();
     }
+
+    public List<Long> getFriendUids(Long uid){
+        return lambdaQuery()
+                .eq(UserFriend::getDeleteStatus, 0)
+                .eq(UserFriend::getUid, uid)
+                .select(UserFriend::getFriendUid)
+                .list()
+                .stream()
+                .map(UserFriend::getFriendUid)
+                .collect(Collectors.toList());
+    }
+
+
 
 }

@@ -37,10 +37,11 @@ public class FriendAdapter {
         return userApplyNew;
     }
 
-    public static List<FriendApplyResp> buildFriendApplyList(List<UserApply> records) {
+    public static List<FriendApplyResp> buildFriendApplyList(List<UserApply> records, Map<Long, String> uidNameMap) {
         return records.stream().map(userApply -> {
             FriendApplyResp friendApplyResp = new FriendApplyResp();
             friendApplyResp.setUid(userApply.getUid());
+            friendApplyResp.setName(uidNameMap.getOrDefault(userApply.getUid(), "未知用户")); // 设置名称
             friendApplyResp.setType(userApply.getType());
             friendApplyResp.setApplyId(userApply.getId());
             friendApplyResp.setMsg(userApply.getMsg());
@@ -49,6 +50,7 @@ public class FriendAdapter {
         }).collect(Collectors.toList());
     }
 
+
     public static List<FriendResp> buildFriend(List<UserFriend> list, List<User> userList) {
         Map<Long, User> userMap = userList.stream().collect(Collectors.toMap(User::getId, user -> user));
         return list.stream().map(userFriend -> {
@@ -56,7 +58,11 @@ public class FriendAdapter {
             resp.setUid(userFriend.getFriendUid());
             User user = userMap.get(userFriend.getFriendUid());
             if (Objects.nonNull(user)) {
+                resp.setSign(user.getSign());
                 resp.setActiveStatus(user.getActiveStatus());
+                resp.setName(user.getName());
+                resp.setAvatar(user.getAvatar());
+                resp.setSex(user.getSex());
             }
             return resp;
         }).collect(Collectors.toList());

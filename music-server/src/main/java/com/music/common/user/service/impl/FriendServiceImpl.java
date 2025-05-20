@@ -14,6 +14,7 @@ import com.music.common.common.domain.vo.resp.CursorPageBaseResp;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.event.UserApplyEvent;
 import com.music.common.common.utils.AssertUtil;
+import com.music.common.common.utils.RequestHolder;
 import com.music.common.user.dao.UserApplyDao;
 import com.music.common.user.dao.UserDao;
 import com.music.common.user.dao.UserFriendDao;
@@ -37,10 +38,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import com.google.common.collect.Lists;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.music.common.user.domain.enums.ApplyStatusEnum.WAIT_APPROVAL;
@@ -102,6 +101,8 @@ public class FriendServiceImpl implements FriendService {
     @Override
 //    @RedissonLock(key = "#uid")
     public void apply(Long uid, FriendApplyReq request) {
+        User user = userDao.getById(request.getTargetUid());
+        AssertUtil.isNotEmpty(user, "无此用户!");
         //是否有好友关系
         UserFriend friend = userFriendDao.getByFriend(uid, request.getTargetUid());
         AssertUtil.isEmpty(friend, "你们已经是好友了");
@@ -136,10 +137,21 @@ public class FriendServiceImpl implements FriendService {
         if (CollectionUtil.isEmpty(userApplyIPage.getRecords())) {
             return PageBaseResp.empty();
         }
+
+        // 1. 获取 uid 列表
+        List<Long> uidList = userApplyIPage.getRecords().stream()
+                .map(UserApply::getUid)
+                .collect(Collectors.toList());
+        // 2. 查询用户信息
+        Map<Long, User> users = userDao.getBatch(uidList);
+        // 3. 构造 uid -> name 映射
+        Map<Long, String> uidNameMap = users.values().stream()
+                .collect(Collectors.toMap(User::getId, User::getName));
+
         //将这些申请列表设为已读
         readApples(uid, userApplyIPage);
         //返回消息
-        return PageBaseResp.init(userApplyIPage, FriendAdapter.buildFriendApplyList(userApplyIPage.getRecords()));
+        return PageBaseResp.init(userApplyIPage, FriendAdapter.buildFriendApplyList(userApplyIPage.getRecords(), uidNameMap));
     }
 
     private void readApples(Long uid, IPage<UserApply> userApplyIPage) {
@@ -209,6 +221,11 @@ public class FriendServiceImpl implements FriendService {
                 .collect(Collectors.toList());
         List<User> userList = userDao.getFriendList(friendUids);
         return CursorPageBaseResp.init(friendPage, FriendAdapter.buildFriend(friendPage.getList(), userList));
+    }
+
+    @Override
+    public List<Long> friendUids(Long uid) {
+        return userFriendDao.getFriendUids(uid);
     }
 
     private void createFriend(Long uid, Long targetUid) {
