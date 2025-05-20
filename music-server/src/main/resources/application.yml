@@ -9,6 +9,13 @@ spring:
     username: ${music.mysql.username}
     password: ${music.mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      minimum-idle: 5                  # 最小空闲连接数
+      maximum-pool-size: 15            # 最大连接数
+      connection-timeout: 60000        # 连接超时时间(毫秒)
+      initialization-fail-timeout: 60000  # 初始化失败超时
+      connection-init-sql: "SELECT 1"   # 连接初始化验证SQL
+      connection-test-query: "SELECT 1" # 连接测试查询
   redis:
     # Redis服务器地址
     host: ${music.redis.host}
