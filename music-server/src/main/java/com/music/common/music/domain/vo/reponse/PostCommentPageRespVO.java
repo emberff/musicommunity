@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @ApiModel(description = "评论分页响应 VO")
-public class CommentPageRespVO {
+public class PostCommentPageRespVO {
 
     @ApiModelProperty(value = "评论 ID")
     private Long id;
@@ -24,8 +24,8 @@ public class CommentPageRespVO {
     @ApiModelProperty(value = "用户头像")
     private String avatar;
 
-    @ApiModelProperty(value = "歌曲 ID")
-    private Long songId;
+    @ApiModelProperty(value = "帖子 ID")
+    private Long postId;
 
     @ApiModelProperty(value = "父评论 ID，根节点为 0")
     private Long parentId;
@@ -43,5 +43,5 @@ public class CommentPageRespVO {
     private Date updateTime;
 
     @ApiModelProperty(value = "子评论列表")
-    private List<CommentPageRespVO> children;
+    private List<PostCommentPageRespVO> children;
 }

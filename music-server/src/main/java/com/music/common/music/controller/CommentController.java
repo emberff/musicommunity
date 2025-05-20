@@ -50,7 +50,7 @@ public class CommentController {
 
     @GetMapping("/page")
     @ApiOperation("评论分页")
-    private ApiResult<PageBaseResp<CommentPageRespVO>> page(@Valid @RequestBody CommentPageReq req) {
+    private ApiResult<PageBaseResp<CommentPageRespVO>> page(@Valid CommentPageReq req) {
         return ApiResult.success(commentService.pageComment(req));
     }
 

@@ -1,8 +1,5 @@
 package com.music.common.music.domain.vo.request;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentAddReq {
+public class PostCommentAddReq {
 
 
     /**
@@ -24,7 +21,7 @@ public class CommentAddReq {
      */
     @NotNull
     @ApiModelProperty(value = "歌曲id", required = true)
-    private Long songId;
+    private Long postId;
 
     /**
      * 父id

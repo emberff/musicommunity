@@ -1,7 +1,6 @@
 package com.music.common.music.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -14,24 +13,24 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 评论表
+ * 发布作品表-参考tiktok
  * </p>
  *
  * @author <a href="https://github.com/emberff">pf</a>
- * @since 2025-05-14
+ * @since 2025-05-20
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Builder
-@TableName("comment")
-public class Comment implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+@TableName("post")
+public class Post implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * id
      */
-      @TableId(value = "id", type = IdType.AUTO)
+      @TableId("id")
     private Long id;
 
     /**
@@ -41,26 +40,41 @@ public class Comment implements Serializable {
     private Long userId;
 
     /**
-     * 歌曲id
+     * 用户名
      */
-    @TableField("song_id")
-    private Long songId;
+    @TableField("user_name")
+    private String userName;
 
     /**
-     * 父id
+     * 用户头像
      */
-    @TableField("parent_id")
-    private Long parentId;
+    @TableField("user_avatar")
+    private String userAvatar;
 
     /**
-     * 内容
+     * 描述
      */
-    @TableField("content")
-    private String content;
+    @TableField("description")
+    private String description;
 
     /**
-     * 是否禁用
+     * 点赞数
      */
+    @TableField("like_count")
+    private Integer likeCount;
+
+    /**
+     * 评论数
+     */
+    @TableField("comment_count")
+    private Integer commentCount;
+
+    /**
+     * 分享数
+     */
+    @TableField("share_count")
+    private Integer shareCount;
+
     @TableField("status")
     private Integer status;
 

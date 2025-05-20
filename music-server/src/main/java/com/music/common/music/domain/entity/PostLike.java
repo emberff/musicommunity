@@ -6,25 +6,21 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
-import java.util.Date;
-
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 评论表
+ * 
  * </p>
  *
  * @author <a href="https://github.com/emberff">pf</a>
- * @since 2025-05-14
+ * @since 2025-05-20
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@Builder
-@TableName("comment")
-public class Comment implements Serializable {
+@TableName("post_like")
+public class PostLike implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,40 +31,28 @@ public class Comment implements Serializable {
     private Long id;
 
     /**
+     * 帖子id
+     */
+    @TableField("post_id")
+    private Long postId;
+
+    /**
      * 用户id
      */
     @TableField("user_id")
     private Long userId;
 
     /**
-     * 歌曲id
+     * 是否喜欢 0取消 1喜欢
      */
-    @TableField("song_id")
-    private Long songId;
-
-    /**
-     * 父id
-     */
-    @TableField("parent_id")
-    private Long parentId;
-
-    /**
-     * 内容
-     */
-    @TableField("content")
-    private String content;
-
-    /**
-     * 是否禁用
-     */
-    @TableField("status")
-    private Integer status;
+    @TableField("`like`")
+    private Integer like;
 
     @TableField("create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     @TableField("update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
 
 }

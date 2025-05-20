@@ -14,17 +14,17 @@ import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 评论表
+ * 
  * </p>
  *
  * @author <a href="https://github.com/emberff">pf</a>
- * @since 2025-05-14
+ * @since 2025-05-20
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Builder
-@TableName("comment")
-public class Comment implements Serializable {
+@EqualsAndHashCode(callSuper = false)
+@TableName("post_comment")
+public class PostComment implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,22 +35,19 @@ public class Comment implements Serializable {
     private Long id;
 
     /**
+     * 父id
+     */
+    @TableField("parent_id")
+    private Long parentId;
+
+    /**
      * 用户id
      */
     @TableField("user_id")
     private Long userId;
 
-    /**
-     * 歌曲id
-     */
-    @TableField("song_id")
-    private Long songId;
-
-    /**
-     * 父id
-     */
-    @TableField("parent_id")
-    private Long parentId;
+    @TableField("post_id")
+    private Long postId;
 
     /**
      * 内容
@@ -59,7 +56,7 @@ public class Comment implements Serializable {
     private String content;
 
     /**
-     * 是否禁用
+     * 0隐藏 1正常
      */
     @TableField("status")
     private Integer status;

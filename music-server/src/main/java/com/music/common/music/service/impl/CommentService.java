@@ -1,7 +1,9 @@
 package com.music.common.music.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.common.domain.enums.YesOrNoEnum;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
@@ -26,6 +28,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -43,7 +46,7 @@ public class CommentService implements ICommentService {
                 .songId(req.getSongId())
                 .parentId(req.getParentId() == null ? 0 : req.getParentId())//未传则为0
                 .userId(RequestHolder.get().getUid())
-                .cotent(req.getCotent())
+                .content(req.getContent())
                 .status(YesOrNoEnum.YES.getStatus())
                 .build();
         commentDao.save(comment);
@@ -56,7 +59,11 @@ public class CommentService implements ICommentService {
         if (userService.isAdmin(uid)) {
             AssertUtil.equal(comment.getUserId(), uid, "无权限修改!");
         }
-        comment.setStatus(YesOrNoEnum.NO.getStatus());
+        if (comment.getStatus().equals(YesOrNoEnum.YES.getStatus())) {
+            comment.setStatus(YesOrNoEnum.NO.getStatus());
+        } else {
+            comment.setStatus(YesOrNoEnum.YES.getStatus());
+        }
         commentDao.save(comment);
     }
 
@@ -66,8 +73,13 @@ public class CommentService implements ICommentService {
         Page<Comment> page = commentDao.lambdaQuery()
                 .eq(Comment::getSongId, req.getSongId())
                 .eq(Comment::getParentId, 0L)
+                // 如果Comment确实有status字段，保留下面这行，否则移除
+                .eq(ObjectUtil.isNotNull(NormalOrNoEnum.NORMAL), Comment::getStatus, NormalOrNoEnum.NORMAL.getStatus())
                 .orderByDesc(Comment::getCreateTime)
                 .page(new Page<>(req.getPageNo(), req.getPageSize()));
+
+        // 打印调试信息
+//        log.info("查询到的根评论数量: {}", page.getRecords().size());
 
         List<Comment> rootComments = page.getRecords();
         if (rootComments.isEmpty()) {
@@ -79,42 +91,75 @@ public class CommentService implements ICommentService {
         // 2. 查询子评论
         List<Comment> childComments = commentDao.lambdaQuery()
                 .in(Comment::getParentId, rootIds)
+                // 如果Comment确实有status字段，保留下面这行，否则移除
+                .eq(ObjectUtil.isNotNull(NormalOrNoEnum.NORMAL), Comment::getStatus, NormalOrNoEnum.NORMAL.getStatus())
                 .list();
 
-        // 3. 合并所有评论用户ID
-        List<Comment> allComments = new ArrayList<>();
-        allComments.addAll(rootComments);
-        allComments.addAll(childComments);
+        // 打印调试信息
+//        log.info("查询到的子评论数量: {}", childComments.size());
 
-        Set<Long> userIds = allComments.stream().map(Comment::getUserId).collect(Collectors.toSet());
+        // 3. 合并评论用户ID
+        Set<Long> userIds = Stream.concat(
+                rootComments.stream().map(Comment::getUserId),
+                childComments.stream().map(Comment::getUserId)
+        ).filter(Objects::nonNull).collect(Collectors.toSet());
 
         // 4. 获取用户信息
-        Map<Long, User> userInfoMap = userIds.stream()
-                .collect(Collectors.toMap(Function.identity(), userDao::getById));
+        List<User> users = userDao.listByIds(userIds);
+        Map<Long, User> userInfoMap = users.stream()
+                .collect(Collectors.toMap(User::getId, Function.identity(), (e1, e2) -> e1));
 
-        // 5. 转换为 VO 并填充用户信息
-        Map<Long, CommentPageRespVO> voMap = allComments.stream().map(comment -> {
-            CommentPageRespVO vo = BeanUtil.copyProperties(comment, CommentPageRespVO.class);
-            User userInfo = userInfoMap.get(comment.getUserId());
-            if (userInfo != null) {
-                vo.setNickName(userInfo.getName());
-                vo.setAvatar(userInfo.getAvatar());
+        // 打印调试信息
+//        log.info("查询到的用户数量: {}, 用户ID数量: {}", userInfoMap.size(), userIds.size());
+
+        // 5. 构建评论VO
+        Map<Long, CommentPageRespVO> voMap = new HashMap<>();
+
+        for (Comment comment : rootComments) {
+            CommentPageRespVO vo = new CommentPageRespVO();
+            BeanUtil.copyProperties(comment, vo);
+
+            // 确保所有重要字段都被设置
+            vo.setId(comment.getId());
+            vo.setParentId(comment.getParentId());
+            vo.setContent(comment.getContent());
+
+            User user = userInfoMap.get(comment.getUserId());
+            if (user != null) {
+                vo.setNickName(user.getName());
+                vo.setAvatar(user.getAvatar());
             }
             vo.setChildren(new ArrayList<>());
-            return vo;
-        }).collect(Collectors.toMap(CommentPageRespVO::getId, Function.identity()));
+            voMap.put(comment.getId(), vo);
+        }
 
-        // 6. 组装嵌套结构
-        for (Comment child : childComments) {
-            CommentPageRespVO parent = voMap.get(child.getParentId());
-            if (parent != null) {
-                parent.getChildren().add(voMap.get(child.getId()));
+        for (Comment comment : childComments) {
+            CommentPageRespVO vo = new CommentPageRespVO();
+            BeanUtil.copyProperties(comment, vo);
+
+            // 确保所有重要字段都被设置
+            vo.setId(comment.getId());
+            vo.setParentId(comment.getParentId());
+            vo.setContent(comment.getContent());
+
+            User user = userInfoMap.get(comment.getUserId());
+            if (user != null) {
+                vo.setNickName(user.getName());
+                vo.setAvatar(user.getAvatar());
+            }
+            vo.setChildren(new ArrayList<>());
+            voMap.put(comment.getId(), vo);
+
+            // 添加到父评论
+            CommentPageRespVO parentVo = voMap.get(comment.getParentId());
+            if (parentVo != null) {
+                parentVo.getChildren().add(vo);
             }
         }
 
-        // 7. 返回根评论分页响应
+        // 6. 返回根评论列表
         List<CommentPageRespVO> resultList = rootComments.stream()
-                .map(c -> voMap.get(c.getId()))
+                .map(comment -> voMap.get(comment.getId()))
                 .collect(Collectors.toList());
 
         return PageBaseResp.init(page, resultList);

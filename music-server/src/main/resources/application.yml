@@ -9,13 +9,22 @@ spring:
     username: ${music.mysql.username}
     password: ${music.mysql.password}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    hikari:
-      minimum-idle: 5                  # 最小空闲连接数
-      maximum-pool-size: 15            # 最大连接数
-      connection-timeout: 60000        # 连接超时时间(毫秒)
-      initialization-fail-timeout: 60000  # 初始化失败超时
-      connection-init-sql: "SELECT 1"   # 连接初始化验证SQL
-      connection-test-query: "SELECT 1" # 连接测试查询
+    spring:
+      datasource:
+        hikari:
+          minimum-idle: 5                  # 最小空闲连接数
+          maximum-pool-size: 15            # 最大连接数
+          idle-timeout: 600000             # 连接池中连接最大空闲时间(10分钟)
+          max-lifetime: 1800000            # 连接最大生存时间(30分钟，必须小于MySQL wait_timeout)
+          connection-timeout: 60000        # 连接超时时间(60秒)
+          validation-timeout: 5000         # 连接验证超时时间(5秒)
+          initialization-fail-timeout: 60000 # 初始化失败超时
+          connection-init-sql: "SELECT 1"  # 连接初始化验证SQL
+          connection-test-query: "SELECT 1" # 连接测试查询
+          auto-commit: true                # 自动提交
+          pool-name: "HikariCP-Pool"       # 连接池名称
+          register-mbeans: false           # 是否注册JMX MBeans
+          leak-detection-threshold: 60000  # 连接泄漏检测阈值(60秒)
   redis:
     # Redis服务器地址
     host: ${music.redis.host}
