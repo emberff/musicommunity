@@ -1,8 +1,11 @@
 package com.music.common.user.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
+import com.music.common.user.domain.vo.request.user.UserSearchPageReq;
+import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
 
@@ -42,4 +45,5 @@ public interface IUserService{
     Boolean isAdmin(Long userId);
 
 
+    PageBaseResp<FriendResp> searchUser(UserSearchPageReq req);
 }
