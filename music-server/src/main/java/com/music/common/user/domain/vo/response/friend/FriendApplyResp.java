@@ -1,10 +1,14 @@
 package com.music.common.user.domain.vo.response.friend;
 
+import cn.hutool.core.date.DateTime;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 
 /**
@@ -40,4 +44,7 @@ public class FriendApplyResp {
 
     @ApiModelProperty("申请状态 1待审批 2同意")
     private Integer status;
+
+    @ApiModelProperty("申请时间")
+    private Date createTime;
 }

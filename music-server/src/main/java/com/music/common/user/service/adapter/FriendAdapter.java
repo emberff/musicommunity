@@ -49,6 +49,7 @@ public class FriendAdapter {
             friendApplyResp.setApplyId(userApply.getId());
             friendApplyResp.setMsg(userApply.getMsg());
             friendApplyResp.setStatus(userApply.getStatus());
+            friendApplyResp.setCreateTime(userApply.getCreateTime());
             return friendApplyResp;
         }).collect(Collectors.toList());
     }
