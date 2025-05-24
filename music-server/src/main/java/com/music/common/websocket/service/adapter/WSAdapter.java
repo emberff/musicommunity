@@ -136,4 +136,11 @@ public class WSAdapter {
         wsBaseResp.setData(resp);
         return wsBaseResp;
     }
+
+    public static WSBaseResp<WSSongAdd> buildSongAdd(WSSongAdd resp) {
+        WSBaseResp<WSSongAdd> wsBaseResp = new WSBaseResp<>();
+        wsBaseResp.setType(WSRespTypeEnum.SONG_ADD.getType());
+        wsBaseResp.setData(resp);
+        return wsBaseResp;
+    }
 }

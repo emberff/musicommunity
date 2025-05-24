@@ -8,17 +8,16 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.SingerDetailResp;
+import com.music.common.music.domain.vo.reponse.SingerPageResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
 import com.music.common.music.service.ISingerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
@@ -46,11 +45,16 @@ public class SingerController {
 
     @GetMapping("/page")
     @ApiOperation("歌手分页")
-    public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
+    public ApiResult<PageBaseResp<SingerPageResp>> page(@Valid PageBaseReq req) {
         return ApiResult.success(singerService.pageSinger(req));
     }
 
-//    @PutMapping("/follow")
+    @PutMapping("/follow")
+    @ApiOperation("关注歌手")
+    public ApiResult<Boolean> followSinger(@Valid @RequestBody IdReqVO reqVO) {
+        return ApiResult.success(singerService.followSinger(reqVO));
+    }
+
 
     //TODO 1.歌手表字段 有待完善 2.用户关注歌手表未建
 }

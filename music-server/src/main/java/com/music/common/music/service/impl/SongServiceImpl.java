@@ -22,6 +22,14 @@ import com.music.common.music.service.IPlaylistService;
 import com.music.common.music.service.ISongService;
 import com.music.common.music.service.adapter.PlaylistAdapter;
 import com.music.common.music.service.adapter.SongAdapter;
+import com.music.common.user.dao.UserDao;
+import com.music.common.user.domain.entity.User;
+import com.music.common.websocket.domain.vo.resp.WSBaseResp;
+import com.music.common.websocket.domain.vo.resp.WSFriendApply;
+import com.music.common.websocket.domain.vo.resp.WSMessage;
+import com.music.common.websocket.domain.vo.resp.WSSongAdd;
+import com.music.common.websocket.service.WebSocketService;
+import com.music.common.websocket.service.adapter.WSAdapter;
 import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +50,12 @@ public class SongServiceImpl implements ISongService {
     private SingerDao singerDao;
     @Autowired
     private SongRecDao songRecDao;
+    @Autowired
+    private WebSocketService webSocketService;
+    @Autowired
+    private UserDao userDao;
+    @Autowired
+    private UserFollowDao userFollowDao;
 
 
     @Override
@@ -65,6 +79,19 @@ public class SongServiceImpl implements ISongService {
 
     @Override
     public Boolean saveSong(SongAddReq req) {
+        //若非歌手, 直接将其添加至歌手表
+        Long uid = RequestHolder.get().getUid();
+        User user = userDao.getById(uid);
+        Singer one = singerDao.lambdaQuery().eq(Singer::getUid, uid).one();
+        if (one == null) {
+            one = Singer.builder()
+                    .uid(uid)
+                    .name(user.getName())
+                    .avatar(user.getAvatar())
+                    .build();
+            singerDao.save(one);
+        }
+
         Song song = new Song();
         if (req.getType().equals(SongTypeEnum.JAMENDO_API.getValue())) {
             AssertUtil.isNotEmpty(req.getId(), "API歌曲id不可为空!");
@@ -73,8 +100,24 @@ public class SongServiceImpl implements ISongService {
         song.setId(req.getId());
         song.setName(req.getName());
         song.setUrl(req.getUrl());
+        song.setSingerId(one.getId());
+        song.setType(SongTypeEnum.UPLOAD.getValue());
+        songDao.save(song);
 
-        return songDao.save(song);
+
+        List<UserFollow> followers = userFollowDao.lambdaQuery().eq(UserFollow::getSingerId, one.getId()).list();
+        log.info("该歌手被 {} 个用户关注", followers.size());
+        for (UserFollow userFollow : followers) {
+            try {
+                WSBaseResp<WSSongAdd> wsSongAddWSBaseResp = WSAdapter.buildSongAdd(new WSSongAdd(uid, song.getName()));
+                webSocketService.sendToUid(wsSongAddWSBaseResp, userFollow.getUserId());
+            } catch (Exception e) {
+                log.error("推送歌曲消息失败, userId={}", userFollow.getUserId(), e);
+            }
+        }
+
+
+        return true;
     }
 
     @Override

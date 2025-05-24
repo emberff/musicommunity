@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.annotation.TableField;
 import java.io.Serializable;
+import java.util.Date;
+
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -18,6 +21,7 @@ import lombok.EqualsAndHashCode;
  * @since 2025-03-21
  */
 @Data
+@Builder
 @EqualsAndHashCode(callSuper = false)
 @TableName("singer")
 public class Singer implements Serializable {
@@ -31,10 +35,22 @@ public class Singer implements Serializable {
     private Long id;
 
     /**
+     * 对应的用户id
+     */
+    @TableField(value = "uid")
+    private Long uid;
+
+    /**
      * 歌手名
      */
     @TableField("name")
     private String name;
+
+    /**
+     * 头像
+     */
+    @TableField("avatar")
+    private String avatar;
 
     /**
      * 专辑数
@@ -49,10 +65,10 @@ public class Singer implements Serializable {
     private Integer followNum;
 
     @TableField("create_time")
-    private LocalDateTime createTime;
+    private Date createTime;
 
     @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
 
 }
