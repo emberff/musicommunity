@@ -23,5 +23,7 @@ public class UserInfoResp {
     @ApiModelProperty(value = "头像")
     private String avatar;
 
+    @ApiModelProperty(value = "个性签名")
+    private String sign;
 
 }

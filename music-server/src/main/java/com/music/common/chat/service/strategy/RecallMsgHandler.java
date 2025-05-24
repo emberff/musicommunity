@@ -64,7 +64,6 @@ public class RecallMsgHandler extends AbstractMsgHandler<Object> {
         update.setType(MessageTypeEnum.RECALL.getType());
         update.setExtra(extra);
         messageDao.updateById(update);
-        //TODO 引入消息撤回的发布/监听事件
         applicationEventPublisher.publishEvent(new MessageRecallEvent(this, new ChatMsgRecallDTO(message.getId(), message.getRoomId(), recallUid)));
 
     }

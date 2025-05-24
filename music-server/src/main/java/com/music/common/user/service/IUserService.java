@@ -5,6 +5,7 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
 import com.music.common.user.domain.vo.request.user.UserSearchPageReq;
+import com.music.common.user.domain.vo.request.user.UserUpdateReq;
 import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
@@ -46,4 +47,6 @@ public interface IUserService{
 
 
     PageBaseResp<FriendResp> searchUser(UserSearchPageReq req);
+
+    Boolean updateUser(UserUpdateReq req);
 }

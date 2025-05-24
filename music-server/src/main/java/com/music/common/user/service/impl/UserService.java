@@ -6,7 +6,9 @@ import com.music.common.common.constant.RedisKey;
 import com.music.common.common.domain.enums.UserTypeEnum;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.exception.BusinessException;
+import com.music.common.common.utils.AssertUtil;
 import com.music.common.common.utils.RedisUtils;
+import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.dao.PlaylistDao;
 import com.music.common.music.dao.PowerDao;
 import com.music.common.music.dao.UserPlaylistDao;
@@ -20,6 +22,7 @@ import com.music.common.user.dao.UserDao;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
 import com.music.common.user.domain.vo.request.user.UserSearchPageReq;
+import com.music.common.user.domain.vo.request.user.UserUpdateReq;
 import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
@@ -140,6 +143,27 @@ public class UserService implements IUserService {
                 .collect(Collectors.toList());
 
         return PageBaseResp.init(userPage, resps);
+    }
+
+    @Override
+    public Boolean updateUser(UserUpdateReq req) {
+        Long uid = RequestHolder.get().getUid();
+        User user = userDao.getById(uid);
+        AssertUtil.isNotEmpty(user, "未找到当前用户!");
+        if (req.getSex() != null){
+            user.setSex(req.getSex());
+        }
+        if (req.getName() != null){
+            user.setName(req.getName());
+        }
+        if (req.getPhone() != null) {
+            user.setPhone(req.getPhone());
+        }
+        if (req.getAvatar() != null) {
+            user.setAvatar(req.getAvatar());
+        }
+        userDao.save(user);
+        return true;
     }
 
 

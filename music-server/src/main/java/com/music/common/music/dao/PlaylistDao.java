@@ -7,6 +7,8 @@ import com.music.common.music.domain.entity.Playlist;
 import com.music.common.music.domain.entity.PlaylistSong;
 import com.music.common.music.domain.entity.Power;
 import com.music.common.music.domain.entity.UserPlaylist;
+import com.music.common.music.domain.enums.IsPublicEnum;
+import com.music.common.music.domain.enums.PlayListTypeEnum;
 import com.music.common.music.mapper.PlaylistMapper;
 import com.music.common.music.service.IPlaylistService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -43,6 +45,8 @@ public class PlaylistDao extends ServiceImpl<PlaylistMapper, Playlist>{
 
     public IPage<Playlist> getPage(Page page) {
         return lambdaQuery()
+                .eq(Playlist::getIsPublic, IsPublicEnum.IS_PUBLIC.getValue())
+                .ne(Playlist::getType, PlayListTypeEnum.USER_FAVOURITE.getValue())
                 .orderByDesc(Playlist::getCreateTime) // 指定按创建时间倒序
                 .page(page);
     }

@@ -118,7 +118,7 @@ public class PlaylistServiceImpl implements IPlaylistService {
         // 1.歌单是否公开
         // 2.若非公开看用户是否为管理员
         if (!IsPublicEnum.IS_PUBLIC.getValue().equals(playlist.getIsPublic())) {
-            if (!validateMngPower(RequestHolder.get().getUid(), playlistId)) {
+            if (!validateMngPower(playlistId, RequestHolder.get().getUid())) {
                 throw new BusinessException("不可查看歌单!");
             }
         }

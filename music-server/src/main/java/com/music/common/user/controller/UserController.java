@@ -7,11 +7,13 @@ import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
 import com.music.common.user.domain.vo.request.user.UserRegisterReq;
 import com.music.common.user.domain.vo.request.user.UserSearchPageReq;
+import com.music.common.user.domain.vo.request.user.UserUpdateReq;
 import com.music.common.user.domain.vo.response.friend.FriendResp;
 import com.music.common.user.domain.vo.response.user.UserInfoResp;
 import com.music.common.user.domain.vo.response.user.UserLoginResp;
 import com.music.common.user.service.IUserService;
 import com.music.common.user.service.LoginService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +63,11 @@ public class UserController {
     @ApiOperation("搜索用户")
     public ApiResult<PageBaseResp<FriendResp>> searchUser(@Valid UserSearchPageReq req) {
         return ApiResult.success(userService.searchUser(req));
+    }
+
+    @PostMapping("/update")
+    @ApiOperation("修改个人信息")
+    public ApiResult<Boolean> updateUser(@Valid @RequestBody UserUpdateReq req) {
+        return ApiResult.success(userService.updateUser(req));
     }
 }
