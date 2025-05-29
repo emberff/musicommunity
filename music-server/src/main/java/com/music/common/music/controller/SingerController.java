@@ -1,15 +1,13 @@
 package com.music.common.music.controller;
 
 
+import cn.hutool.db.Page;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.ApiResult;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.RequestHolder;
-import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
-import com.music.common.music.domain.vo.reponse.SingerDetailResp;
-import com.music.common.music.domain.vo.reponse.SingerPageResp;
-import com.music.common.music.domain.vo.reponse.SongDetailResp;
+import com.music.common.music.domain.vo.reponse.*;
 import com.music.common.music.service.ISingerService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.stereotype.Controller;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -55,7 +54,10 @@ public class SingerController {
         return ApiResult.success(singerService.followSinger(reqVO));
     }
 
-
-    //TODO 1.歌手表字段 有待完善 2.用户关注歌手表未建
+    @GetMapping("/album/page")
+    @ApiOperation("歌手专辑列表")
+    public ApiResult<List<PlaylistDetailResp>> getAlbumPage(@Valid IdReqVO reqVO) {
+        return ApiResult.success(singerService.getSingerAlbum(reqVO.getId()));
+    }
 }
 
