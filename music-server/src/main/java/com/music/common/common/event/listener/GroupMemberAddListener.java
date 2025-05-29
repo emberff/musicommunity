@@ -51,7 +51,8 @@ public class GroupMemberAddListener {
         User user = userDao.getById(inviteUid);
         List<Long> uidList = memberList.stream().map(GroupMember::getUid).collect(Collectors.toList());
         ChatMessageReq chatMessageReq = RoomAdapter.buildGroupAddMessage(roomGroup, user, userDao.getBatch(uidList));
-        chatService.sendMsg(chatMessageReq, User.UID_SYSTEM);
+//        chatService.sendMsg(chatMessageReq, User.UID_SYSTEM);
+        chatService.sendMsg(chatMessageReq, inviteUid);
     }
 
     @Async
