@@ -77,16 +77,21 @@ public class SingerServiceImpl implements ISingerService {
     public Boolean followSinger(IdReqVO reqVO) {
         Long uid = RequestHolder.get().getUid();
         UserFollow userFollow = userFollowDao.getBySingerIdAndUid(reqVO.getId(), uid);
-
+        Singer singer = singerDao.getById(reqVO.getId());
         if (userFollow == null) {
             // 没关注 -> 插入
             UserFollow newFollow = new UserFollow();
             newFollow.setSingerId(reqVO.getId());
             newFollow.setUserId(uid);
             userFollowDao.save(newFollow);
+
+            singer.setFollowNum(singer.getFollowNum() + 1);
+            singerDao.save(singer);
         } else {
             // 已关注 -> 删除
             userFollowDao.removeById(userFollow.getId());
+            singer.setFollowNum(singer.getFollowNum() - 1);
+            singerDao.save(singer);
         }
         return true;
     }
