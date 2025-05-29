@@ -7,6 +7,7 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.music.domain.entity.Song;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
+import com.music.common.music.domain.vo.reponse.UserSongPageResp;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.SongAddReq;
 import com.music.common.music.domain.vo.request.SongUpdateReq;
@@ -60,5 +61,11 @@ public class SongController {
     @ApiOperation("修改歌曲")
     private ApiResult<Boolean> updateSong(@Valid @RequestBody SongUpdateReq req) {
         return ApiResult.success(songService.updateSong(req));
+    }
+
+    @GetMapping("/user/page")
+    @ApiOperation("用户上传音乐分页")
+    private ApiResult<PageBaseResp<UserSongPageResp>> getUserMusicPage(@Valid PageBaseReq req) {
+        return ApiResult.success(songService.getUserMusicPage(req));
     }
 }

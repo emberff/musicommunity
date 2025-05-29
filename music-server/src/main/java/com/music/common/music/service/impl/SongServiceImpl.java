@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.AssertUtil;
@@ -14,6 +15,7 @@ import com.music.common.music.domain.enums.PowerTypeEnum;
 import com.music.common.music.domain.enums.SongTypeEnum;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
+import com.music.common.music.domain.vo.reponse.UserSongPageResp;
 import com.music.common.music.domain.vo.request.PlaylistAddReq;
 import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
 import com.music.common.music.domain.vo.request.SongAddReq;
@@ -37,6 +39,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -56,6 +59,8 @@ public class SongServiceImpl implements ISongService {
     private UserDao userDao;
     @Autowired
     private UserFollowDao userFollowDao;
+    @Autowired
+    private CommentDao commentDao;
 
 
     @Override
@@ -168,6 +173,38 @@ public class SongServiceImpl implements ISongService {
 
         // 5. 返回分页响应
         return PageBaseResp.init(pageNo, pageSize, (long) songIds.size(), respList);
+    }
+
+    @Override
+    public PageBaseResp<UserSongPageResp> getUserMusicPage(PageBaseReq req) {
+        Page<Song> page = songDao.lambdaQuery()
+                .eq(Song::getType, SongTypeEnum.UPLOAD)
+                .eq(Song::getStatus, NormalOrNoEnum.NORMAL.getStatus())
+                .page(req.plusPage());
+
+        List<UserSongPageResp> resps = new ArrayList<>();
+        for (Song song : page.getRecords()) {
+            UserSongPageResp userSongPageResp = new UserSongPageResp();
+            // 正确的拷贝方向：从 song 拷贝到响应对象
+            BeanUtil.copyProperties(song, userSongPageResp);
+
+            // 获取歌手信息并设置用户名
+            Singer singer = singerDao.getById(song.getSingerId());
+            if (singer != null) {
+                userSongPageResp.setUserName(singer.getName());
+            }
+
+            // 评论数量统计
+            int commentNum = commentDao.lambdaQuery()
+                    .eq(Comment::getSongId, song.getId())
+                    .eq(Comment::getStatus, NormalOrNoEnum.NORMAL.getStatus())
+                    .count();
+            userSongPageResp.setCommentNum(commentNum);
+
+            resps.add(userSongPageResp);
+        }
+
+        return PageBaseResp.init(page, resps);
     }
 
 

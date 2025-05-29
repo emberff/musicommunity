@@ -2,8 +2,10 @@ package com.music.common.music.service;
 
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
+import com.music.common.music.domain.entity.Song;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
 import com.music.common.music.domain.vo.reponse.SongDetailResp;
+import com.music.common.music.domain.vo.reponse.UserSongPageResp;
 import com.music.common.music.domain.vo.request.SongAddReq;
 import com.music.common.music.domain.vo.request.SongUpdateReq;
 
@@ -26,4 +28,6 @@ public interface ISongService{
     Boolean updateSong(SongUpdateReq req);
 
     PageBaseResp<SimpleSongListResp> getSongRecPage(Long uid, PageBaseReq req);
+
+    PageBaseResp<UserSongPageResp> getUserMusicPage(PageBaseReq req);
 }
