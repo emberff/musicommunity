@@ -3,6 +3,7 @@ package com.music.common.music.controller;
 
 import com.music.common.chat.domain.vo.request.GroupAddReq;
 import com.music.common.chat.service.RoomAppService;
+import com.music.common.common.domain.vo.req.IdListReqVO;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.ApiResult;
@@ -11,10 +12,7 @@ import com.music.common.common.utils.RequestHolder;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
-import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
-import com.music.common.music.domain.vo.request.SongToPlaylistReq;
-import com.music.common.music.domain.vo.request.PlaylistAddReq;
-import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
+import com.music.common.music.domain.vo.request.*;
 import com.music.common.music.service.IPlaylistService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -105,6 +103,13 @@ public class PlaylistController {
     public ApiResult<PageBaseResp<PlaylistPageResp>> page(@Valid PageBaseReq req) {
         return ApiResult.success(playlistService.pagePlaylist2(req));
     }
+
+    @PutMapping("/invite")
+    @ApiOperation("邀请好友管理歌单")
+    public ApiResult<Boolean> invite(@Valid @RequestBody PlaylistInviteReq reqVO) {
+        return ApiResult.success(playlistService.inviteFriend(reqVO));
+    }
+
 
 }
 

@@ -3,7 +3,9 @@ package com.music.common.music.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.music.common.chat.domain.vo.request.GroupAddReq;
+import com.music.common.chat.domain.vo.request.member.MemberAddReq;
 import com.music.common.chat.service.RoomAppService;
+import com.music.common.common.domain.vo.req.IdListReqVO;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
@@ -19,10 +21,7 @@ import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
 import com.music.common.music.domain.vo.reponse.SimpleSongListResp;
-import com.music.common.music.domain.vo.request.PlaylistSongPageReq;
-import com.music.common.music.domain.vo.request.SongToPlaylistReq;
-import com.music.common.music.domain.vo.request.PlaylistAddReq;
-import com.music.common.music.domain.vo.request.PlaylistUpdateReq;
+import com.music.common.music.domain.vo.request.*;
 import com.music.common.music.service.IPlaylistService;
 import com.music.common.music.service.IPlaylistSongService;
 import com.music.common.music.service.adapter.PlaylistAdapter;
@@ -32,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -63,7 +63,7 @@ public class PlaylistServiceImpl implements IPlaylistService {
         Long uid = RequestHolder.get().getUid();
         //直接建立一个歌单对应的群聊房间
         GroupAddReq groupAddReq = new GroupAddReq();
-        groupAddReq.setName(req.getName());
+        groupAddReq.setName(req.getName() + "管理群");
         groupAddReq.setAvatar(req.getCover());
         Long roomId = roomService.addGroup(uid, groupAddReq);
         Playlist playlist = Playlist.builder()
@@ -226,7 +226,32 @@ public class PlaylistServiceImpl implements IPlaylistService {
 
     }
 
+    @Override
+    public Boolean inviteFriend(PlaylistInviteReq reqVO) {
+        Playlist playlist = playlistDao.getById(reqVO.getPlaylistId());
+        AssertUtil.isNotEmpty(playlist, "未查到对应歌单!");
+        // 加入群聊
+        MemberAddReq memberAddReq = new MemberAddReq();
+        memberAddReq.setRoomId(playlist.getRoomId());
+        memberAddReq.setUidList(reqVO.getIdList());
+        Long uid = RequestHolder.get().getUid();
+        AssertUtil.isTrue(validateMngPower(reqVO.getPlaylistId(), uid), "无权限!");
 
+        roomService.addMember(uid, memberAddReq);
+
+        //歌单权限
+        for (Long userId : reqVO.getIdList()) {
+            Power power = Power.builder()
+                    .playlistId(reqVO.getPlaylistId())
+                    .userId(userId)
+                    .powerType(PowerTypeEnum.ADMIN.getValue())
+                    .build();
+            powerDao.save(power);
+        }
+
+        return true;
+    }
+    
     // 校验角色管理权限(创建者 和 管理员)
     private Boolean validateMngPower(Long playlistId, Long uid) {
         List<Integer> powerList = new ArrayList<>();
