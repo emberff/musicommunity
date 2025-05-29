@@ -48,6 +48,9 @@ public class PlaylistDetailResp {
     @ApiModelProperty(value = "是否收藏")
     private Integer isFollowed;
 
+    @ApiModelProperty(value = "创建者id")
+    private Long creatorId;
+
     @ApiModelProperty(value = "歌曲列表")
     private List<SimpleSongListResp> songs;
 

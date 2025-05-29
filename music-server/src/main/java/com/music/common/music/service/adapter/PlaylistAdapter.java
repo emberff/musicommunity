@@ -32,6 +32,7 @@ public class PlaylistAdapter {
         BeanUtil.copyProperties(playlist, playlistDetailResp);
         playlistDetailResp.setSongs(simpleSongList);
         playlistDetailResp.setIsFollowed(isFollowed);
+        playlistDetailResp.setCreatorId(playlist.getPlCreatorId());
         return playlistDetailResp;
     }
 }
