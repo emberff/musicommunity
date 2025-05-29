@@ -86,12 +86,12 @@ public class SingerServiceImpl implements ISingerService {
             userFollowDao.save(newFollow);
 
             singer.setFollowNum(singer.getFollowNum() + 1);
-            singerDao.save(singer);
+            singerDao.updateById(singer);
         } else {
             // 已关注 -> 删除
             userFollowDao.removeById(userFollow.getId());
             singer.setFollowNum(singer.getFollowNum() - 1);
-            singerDao.save(singer);
+            singerDao.updateById(singer);
         }
         return true;
     }
