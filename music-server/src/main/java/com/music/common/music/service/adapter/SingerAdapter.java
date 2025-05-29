@@ -6,12 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SingerAdapter {
-    public static SingerDetailResp buildSingerDetail(Singer singer) {
+    public static SingerDetailResp buildSingerDetail(Singer singer, Integer songNum) {
         SingerDetailResp singerDetailResp = new SingerDetailResp();
         singerDetailResp.setSingerId(singer.getId());
+        singerDetailResp.setAvatar(singer.getAvatar());
         singerDetailResp.setSingerName(singer.getName());
         singerDetailResp.setAlbumNum(singer.getAlbumNum());
         singerDetailResp.setFollowNum(singer.getFollowNum());
+        singerDetailResp.setSongNum(songNum);
         return singerDetailResp;
     }
 

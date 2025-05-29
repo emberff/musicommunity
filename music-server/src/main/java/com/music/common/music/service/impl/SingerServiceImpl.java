@@ -3,6 +3,7 @@ package com.music.common.music.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
@@ -38,12 +39,18 @@ public class SingerServiceImpl implements ISingerService {
     private SingerDao singerDao;
     @Autowired
     private UserFollowDao userFollowDao;
+    @Autowired
+    private SongDao songDao;
 
     @Override
     public SingerDetailResp getSingerDetail(Long id) {
         Singer singer = singerDao.getById(id);
+        Integer count = songDao.lambdaQuery()
+                .eq(Song::getSingerId, id)
+                .eq(Song::getStatus, NormalOrNoEnum.NORMAL.getStatus())
+                .count();
         AssertUtil.isNotEmpty(singer, "未查询到歌手信息!");
-        return SingerAdapter.buildSingerDetail(singer);
+        return SingerAdapter.buildSingerDetail(singer, count);
     }
 
     @Override

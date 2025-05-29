@@ -26,6 +26,12 @@ public class SingerDetailResp {
     @ApiModelProperty(value = "歌手名")
     private String singerName;
 
+    @ApiModelProperty(value = "头像")
+    private String avatar;
+
+    @ApiModelProperty(value = "歌曲数")
+    private Integer songNum;
+
     @ApiModelProperty(value = "专辑数")
     private Integer albumNum;
 
