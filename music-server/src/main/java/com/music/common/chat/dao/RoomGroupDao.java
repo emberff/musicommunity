@@ -44,7 +44,7 @@ public class RoomGroupDao extends ServiceImpl<RoomGroupMapper, RoomGroup> {
                 .in(RoomGroup::getRoomId, groupRoomId)
                 .list();
         return roomGroupList.stream()
-                .collect(Collectors.toMap(RoomGroup::getId, Function.identity(), (existing, replacement) -> replacement));
+                .collect(Collectors.toMap(RoomGroup::getRoomId, Function.identity(), (existing, replacement) -> replacement));
     }
 
 }

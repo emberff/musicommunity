@@ -42,6 +42,7 @@ public class MemberAdapter {
             resp.setActiveStatus(a.getActiveStatus());
             resp.setLastOptTime(a.getLastOptTime());
             resp.setUid(a.getId());
+            resp.setName(a.getName());
             return resp;
         }).collect(Collectors.toList());
     }
