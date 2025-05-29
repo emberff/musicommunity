@@ -26,4 +26,12 @@ public class PlaylistAdapter {
         playlistDetailResp.setSongs(simpleSongList);
         return playlistDetailResp;
     }
+
+    public static PlaylistDetailResp buildPlaylistDetail(Playlist playlist, List<SimpleSongListResp> simpleSongList, Integer isFollowed) {
+        PlaylistDetailResp playlistDetailResp = new PlaylistDetailResp();
+        BeanUtil.copyProperties(playlist, playlistDetailResp);
+        playlistDetailResp.setSongs(simpleSongList);
+        playlistDetailResp.setIsFollowed(isFollowed);
+        return playlistDetailResp;
+    }
 }

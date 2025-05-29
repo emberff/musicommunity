@@ -130,7 +130,10 @@ public class PlaylistServiceImpl implements IPlaylistService {
             BeanUtil.copyProperties(song, simpleSongListResp);
             simpleSongList.add(simpleSongListResp);
         }
-        return PlaylistAdapter.buildPlaylistDetail(playlist, simpleSongList);
+        UserPlaylist one = userPlaylistDao.lambdaQuery().eq(UserPlaylist::getUserId, RequestHolder.get().getUid())
+                .eq(UserPlaylist::getPlaylistId, playlistId).one();
+        Integer isFollowed = one == null ? 0 : 1;
+        return PlaylistAdapter.buildPlaylistDetail(playlist, simpleSongList, isFollowed);
     }
 
     @Override
@@ -211,7 +214,7 @@ public class PlaylistServiceImpl implements IPlaylistService {
     public Boolean followPlaylist(IdReqVO reqVO) {
         Playlist playlist = playlistDao.getById(reqVO.getId());
         playlist.setPlFollowNumber(playlist.getPlFollowNumber() + 1);
-        playlistDao.save(playlist);
+        playlistDao.updateById(playlist);
 
         Long uid = RequestHolder.get().getUid();
         UserPlaylist userPlaylist = new UserPlaylist();

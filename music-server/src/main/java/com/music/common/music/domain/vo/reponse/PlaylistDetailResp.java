@@ -45,6 +45,9 @@ public class PlaylistDetailResp {
     @ApiModelProperty(value = "歌单收藏数")
     private Integer plFollowNum;
 
+    @ApiModelProperty(value = "是否收藏")
+    private Integer isFollowed;
+
     @ApiModelProperty(value = "歌曲列表")
     private List<SimpleSongListResp> songs;
 
