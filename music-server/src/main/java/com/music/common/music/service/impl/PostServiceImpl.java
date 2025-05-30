@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
@@ -49,6 +50,8 @@ public class PostServiceImpl implements IPostService {
     private UserDao userDao;
     @Autowired
     private PostLikeDao postLikeDao;
+    @Autowired
+    private PostCommentDao postCommentDao;
 
     @Override
     @Transactional
@@ -109,6 +112,13 @@ public class PostServiceImpl implements IPostService {
                     .eq(PostContent::getPostId, postPageResp.getId())
                     .eq(PostContent::getSort, 0).one();
             postPageResp.setUrl(postContent.getUrl());
+            //点赞数
+            Integer likeCnt = postLikeDao.lambdaQuery().eq(PostLike::getPostId, postPageResp.getId()).count();
+            postPageResp.setLikeCnt(likeCnt);
+            //评论数
+            Integer commentCnt = postCommentDao.lambdaQuery().eq(PostComment::getPostId, postPageResp.getId())
+                    .eq(PostComment::getStatus, NormalOrNoEnum.NORMAL.getStatus()).count();
+            postPageResp.setCommentCnt(commentCnt);
         }
         return PageBaseResp.init(page, postPageResps);
     }
@@ -190,6 +200,57 @@ public class PostServiceImpl implements IPostService {
         postLikeDao.saveOrUpdate(postLike);
 
         return true;
+    }
+
+    @Override
+    public PageBaseResp<PostPageResp> getLikePostPage(PageBaseReq req) {
+        Long uid = RequestHolder.get().getUid();
+
+        // 第一步：查询当前用户点赞的记录分页
+        IPage<PostLike> likePage = postLikeDao.lambdaQuery()
+                .eq(PostLike::getUserId, uid)
+                .eq(PostLike::getLike, NormalOrNoEnum.NORMAL.getStatus())
+                .page(req.plusPage());
+
+        List<Long> postIds = likePage.getRecords().stream()
+                .map(PostLike::getPostId)
+                .collect(Collectors.toList());
+
+        if (CollectionUtil.isEmpty(postIds)) {
+            return PageBaseResp.empty();
+        }
+
+        // 第二步：根据 postIds 批量查询帖子信息（分页中已包含记录限制）
+        List<Post> postList = postDao.lambdaQuery()
+                .in(Post::getId, postIds)
+                .list();
+
+        List<PostPageResp> postPageResps = BeanUtil.copyToList(postList, PostPageResp.class);
+
+        // 第三步：补全 PostPageResp 的附加信息（内容、点赞数、评论数）
+        for (PostPageResp postPageResp : postPageResps) {
+            PostContent postContent = postContentDao.lambdaQuery()
+                    .eq(PostContent::getPostId, postPageResp.getId())
+                    .eq(PostContent::getSort, 0)
+                    .one();
+
+            if (postContent != null) {
+                postPageResp.setUrl(postContent.getUrl());
+            }
+
+            Integer likeCnt = postLikeDao.lambdaQuery()
+                    .eq(PostLike::getPostId, postPageResp.getId())
+                    .count();
+            postPageResp.setLikeCnt(likeCnt);
+
+            Integer commentCnt = postCommentDao.lambdaQuery()
+                    .eq(PostComment::getPostId, postPageResp.getId())
+                    .eq(PostComment::getStatus, NormalOrNoEnum.NORMAL.getStatus())
+                    .count();
+            postPageResp.setCommentCnt(commentCnt);
+        }
+
+        return PageBaseResp.init(likePage, postPageResps);
     }
 
 

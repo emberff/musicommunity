@@ -31,4 +31,6 @@ public interface IPostService{
     Boolean updatePost(PostUpdateReq req);
 
     Boolean likePost(IdReqVO idReqVO);
+
+    PageBaseResp<PostPageResp> getLikePostPage(PageBaseReq req);
 }

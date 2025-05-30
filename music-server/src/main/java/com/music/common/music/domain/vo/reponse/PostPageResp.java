@@ -23,6 +23,12 @@ public class PostPageResp {
     @ApiModelProperty("帖子描述")
     private String description;
 
+    @ApiModelProperty("点赞数")
+    private Integer likeCnt;
+
+    @ApiModelProperty("评论数")
+    private Integer commentCnt;
+
     @ApiModelProperty("url")
     private String url;
 

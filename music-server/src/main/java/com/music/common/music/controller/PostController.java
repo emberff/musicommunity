@@ -12,6 +12,7 @@ import com.music.common.music.service.IPostContentService;
 import com.music.common.music.service.IPostService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -87,5 +88,12 @@ public class PostController {
     private ApiResult<PageBaseResp<PostCommentPageRespVO>> page(@Valid PostCommentPageReq req) {
         return ApiResult.success(postCommentService.pagePostComment(req));
     }
+
+    @GetMapping("/likePost/page")
+    @ApiOperation("喜欢的帖子")
+    private ApiResult<PageBaseResp<PostPageResp>> likePostPage(@Valid PageBaseReq req) {
+        return ApiResult.success(postService.getLikePostPage(req));
+    }
+
 }
 
