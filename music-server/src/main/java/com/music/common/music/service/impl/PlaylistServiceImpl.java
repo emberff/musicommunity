@@ -226,13 +226,14 @@ public class PlaylistServiceImpl implements IPlaylistService {
     @Override
     public PageBaseResp<PlaylistPageResp> pageRecPlaylist(Long uid, PageBaseReq req) {
         return null;
-
     }
 
     @Override
     public Boolean inviteFriend(PlaylistInviteReq reqVO) {
         Playlist playlist = playlistDao.getById(reqVO.getPlaylistId());
         AssertUtil.isNotEmpty(playlist, "未查到对应歌单!");
+
+        followPlaylistByInvited(reqVO.getIdList(), reqVO.getPlaylistId());
         // 加入群聊
         MemberAddReq memberAddReq = new MemberAddReq();
         memberAddReq.setRoomId(playlist.getRoomId());
@@ -251,7 +252,44 @@ public class PlaylistServiceImpl implements IPlaylistService {
                     .build();
             powerDao.save(power);
         }
+        return true;
+    }
 
+    @Override
+    public List<Playlist> getManageList() {
+        Long uid = RequestHolder.get().getUid();
+        List<Integer> powerList = new ArrayList<>();
+        powerList.add(PowerTypeEnum.ADMIN.getValue());
+        powerList.add(PowerTypeEnum.CREATOR.getValue());
+        List<Power> list = powerDao.lambdaQuery().eq(Power::getUserId, uid)
+                .in(Power::getPowerType, powerList)
+                .list();
+
+        List<Playlist> resps = new ArrayList<>();
+        for (Power power : list) {
+            Playlist byId = playlistDao.getById(power.getPlaylistId());
+            resps.add(byId);
+        }
+        return resps;
+    }
+
+    /**
+     * 将歌单加入被邀请好友的关注列表
+     * @param uids
+     * @param playlistId
+     * @return
+     */
+    public Boolean followPlaylistByInvited(List<Long> uids, Long playlistId) {
+        Playlist playlist = playlistDao.getById(playlistId);
+        playlist.setPlFollowNumber(playlist.getPlFollowNumber() + 1);
+        playlistDao.updateById(playlist);
+
+        for (Long uid : uids) {
+            UserPlaylist userPlaylist = new UserPlaylist();
+            userPlaylist.setUserId(uid);
+            userPlaylist.setPlaylistId(playlistId);
+            userPlaylistDao.save(userPlaylist);
+        }
         return true;
     }
     

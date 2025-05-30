@@ -9,6 +9,7 @@ import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.ApiResult;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.RequestHolder;
+import com.music.common.music.domain.entity.Playlist;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * <p>
@@ -108,6 +110,12 @@ public class PlaylistController {
     @ApiOperation("邀请好友管理歌单")
     public ApiResult<Boolean> invite(@Valid @RequestBody PlaylistInviteReq reqVO) {
         return ApiResult.success(playlistService.inviteFriend(reqVO));
+    }
+
+    @GetMapping("/manage/list")
+    @ApiOperation("可编辑歌单列表")
+    private ApiResult<List<Playlist>> manageList() {
+        return ApiResult.success(playlistService.getManageList());
     }
 
 

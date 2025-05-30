@@ -4,10 +4,13 @@ import com.music.common.common.domain.vo.req.IdListReqVO;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
+import com.music.common.music.domain.entity.Playlist;
 import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
 import com.music.common.music.domain.vo.reponse.PlaylistPageResp;
 import com.music.common.music.domain.vo.reponse.PlaylistSongPageResp;
 import com.music.common.music.domain.vo.request.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -86,4 +89,6 @@ public interface IPlaylistService{
     PageBaseResp<PlaylistPageResp> pageRecPlaylist(Long uid, PageBaseReq req);
 
     Boolean inviteFriend(PlaylistInviteReq reqVO);
+
+    List<Playlist> getManageList();
 }
