@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * Description: 消息处理类
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-03-26
  */
 public interface ChatService {

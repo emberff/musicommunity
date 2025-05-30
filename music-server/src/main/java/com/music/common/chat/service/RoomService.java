@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Description: 房间底层管理
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-07-22
  */
 public interface RoomService {

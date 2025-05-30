@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Description: 好友校验
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-03-23
  */
 @Data

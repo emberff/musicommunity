@@ -12,7 +12,7 @@ import java.util.Optional;
 
 /**
  * Description:视频消息
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-06-04
  */
 @Component

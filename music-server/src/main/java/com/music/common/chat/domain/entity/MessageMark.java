@@ -14,7 +14,7 @@ import java.util.Date;
  * 消息标记表
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-04-08
  */
 @Data
@@ -48,7 +48,7 @@ public class MessageMark implements Serializable {
     /**
      * 标记类型 1点赞 2举报
      *
-     * @see com.abin.mallchat.common.chat.domain.enums.MessageMarkTypeEnum
+     * @see com.pf.mallchat.common.chat.domain.enums.MessageMarkTypeEnum
      */
     @TableField("type")
     private Integer type;

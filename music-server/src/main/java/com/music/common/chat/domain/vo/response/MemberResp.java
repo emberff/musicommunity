@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * Description:
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-07-17
  */
 @Data
@@ -25,7 +25,7 @@ public class MemberResp {
     @ApiModelProperty("在线人数")
     private Long onlineNum;//在线人数
     /**
-     * @see com.abin.mallchat.common.chat.domain.enums.GroupRoleAPPEnum
+     * @see com.pf.mallchat.common.chat.domain.enums.GroupRoleAPPEnum
      */
     @ApiModelProperty("成员角色 1群主 2管理员 3普通成员 4踢出群聊")
     private Integer role;

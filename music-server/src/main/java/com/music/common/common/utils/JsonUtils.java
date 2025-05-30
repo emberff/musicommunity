@@ -2,8 +2,8 @@ package com.music.common.common.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datpfd.JsonNode;
+import com.fasterxml.jackson.datpfd.ObjectMapper;
 
 import java.util.List;
 

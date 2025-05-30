@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 /**
  * Description: 上传url请求入参
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-03-23
  */
 @Data

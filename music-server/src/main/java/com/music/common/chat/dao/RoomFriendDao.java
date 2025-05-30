@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * 单聊房间表 服务实现类
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-07-22
  */
 @Service

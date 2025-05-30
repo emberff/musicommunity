@@ -16,7 +16,7 @@ import javax.validation.Valid;
 
 /**
  * Description: oss控制层
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-06-20
  */
 @RestController

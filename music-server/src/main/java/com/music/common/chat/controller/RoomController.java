@@ -32,7 +32,7 @@ import java.util.List;
  * 房间相关接口
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-03-19
  */
 @RestController
@@ -57,6 +57,7 @@ public class RoomController {
     public ApiResult<CursorPageBaseResp<ChatMemberResp>> getMemberPage(@Valid MemberReq request) {
         return ApiResult.success(roomService.getMemberPage(request));
     }
+    
 
 //    @GetMapping("/group/member/list")
 //    @ApiOperation("房间内的所有群成员列表-@专用")

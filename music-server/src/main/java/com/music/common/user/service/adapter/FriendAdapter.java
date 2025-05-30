@@ -20,7 +20,7 @@ import static com.music.common.user.domain.enums.ApplyTypeEnum.ADD_FRIEND;
 
 /**
  * Description: 好友适配器
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-07-22
  */
 public class FriendAdapter {

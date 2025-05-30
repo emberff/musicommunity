@@ -14,7 +14,7 @@ import java.util.Set;
 
 /**
  * Description: 全局房间
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-07-23
  */
 @Component

@@ -14,7 +14,7 @@ import java.util.Date;
  * 群成员表
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-07-16
  */
 @Data
@@ -48,7 +48,7 @@ public class GroupMember implements Serializable {
     /**
      * 成员角色1群主(可撤回，可移除，可解散) 2管理员(可撤回，可移除) 3普通成员
      *
-     * @see com.abin.mallchat.common.chat.domain.enums.GroupRoleEnum
+     * @see com.pf.mallchat.common.chat.domain.enums.GroupRoleEnum
      */
     @TableField("role")
     private Integer role;

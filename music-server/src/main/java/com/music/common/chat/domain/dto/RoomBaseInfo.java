@@ -8,7 +8,7 @@ import java.util.Date;
 
 /**
  * Description: 房间详情
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-07-22
  */
 @Data
@@ -27,7 +27,7 @@ public class RoomBaseInfo {
     /**
      * 是否全员展示 0否 1是
      *
-     * @see com.abin.mallchat.common.chat.domain.enums.HotFlagEnum
+     * @see com.pf.mallchat.common.chat.domain.enums.HotFlagEnum
      */
     private Integer hotFlag;
 

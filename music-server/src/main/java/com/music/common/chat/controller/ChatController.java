@@ -26,7 +26,7 @@ import java.util.Set;
  * 群聊相关接口
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-03-19
  */
 @RestController

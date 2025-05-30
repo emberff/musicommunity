@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * Description: 文本消息入参
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-06-04
  */
 @Data

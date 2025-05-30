@@ -10,7 +10,7 @@ import java.util.Date;
 
 /**
  * Description: 消息撤回
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-06-04
  */
 @Data

@@ -8,7 +8,7 @@ import com.music.common.chat.domain.entity.GroupMember;
  * 群成员表 Mapper 接口
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-07-16
  */
 public interface GroupMemberMapper extends BaseMapper<GroupMember> {

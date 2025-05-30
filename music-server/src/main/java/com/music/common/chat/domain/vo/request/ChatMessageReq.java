@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 /**
  * 聊天信息点播
  * Description: 消息发送请求体
- * Author: <a href="https://github.com/zongzibinbin">abin</a>
+ * Author: <a href="https://github.com/emberff">pf</a>
  * Date: 2023-03-23
  *
  * @author zhaoyuhang
@@ -32,7 +32,7 @@ public class ChatMessageReq {
     private Integer msgType;
 
     /**
-     * @see com.abin.mallchat.common.chat.domain.entity.msg
+     * @see com.pf.mallchat.common.chat.domain.entity.msg
      */
     @ApiModelProperty("消息内容，类型不同传值不同，见https://www.yuque.com/snab/mallcaht/rkb2uz5k1qqdmcmd")
     @NotNull

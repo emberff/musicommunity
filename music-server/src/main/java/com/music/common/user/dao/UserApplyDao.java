@@ -21,7 +21,7 @@ import static com.music.common.user.domain.enums.ApplyStatusEnum.AGREE;
  * 用户申请表 服务实现类
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-07-16
  */
 @Service

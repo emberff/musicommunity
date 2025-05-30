@@ -12,7 +12,7 @@ import java.util.Date;
  * 用户联系人表
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-07-16
  */
 @Data

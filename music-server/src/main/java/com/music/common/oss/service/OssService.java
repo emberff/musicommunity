@@ -9,7 +9,7 @@ import com.music.common.oss.domain.vo.UploadUrlReq;
  * oss 服务类
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-03-19
  */
 public interface OssService {

@@ -12,7 +12,7 @@ import java.util.Date;
  * 群聊房间表
  * </p>
  *
- * @author <a href="https://github.com/zongzibinbin">abin</a>
+ * @author <a href="https://github.com/emberff">pf</a>
  * @since 2023-07-22
  */
 @Data
