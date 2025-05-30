@@ -118,6 +118,11 @@ public class PlaylistController {
         return ApiResult.success(playlistService.getManageList());
     }
 
+    @GetMapping("/follow/page")
+    @ApiOperation("收藏的歌单")
+    private ApiResult<PageBaseResp<Playlist>> followPage(@Valid PageBaseReq req) {
+        return ApiResult.success(playlistService.getFollowPlaylist(req));
+    }
 
 }
 

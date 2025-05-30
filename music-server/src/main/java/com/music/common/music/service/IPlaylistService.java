@@ -91,4 +91,6 @@ public interface IPlaylistService{
     Boolean inviteFriend(PlaylistInviteReq reqVO);
 
     List<Playlist> getManageList();
+
+    PageBaseResp<Playlist> getFollowPlaylist(PageBaseReq req);
 }

@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -271,6 +272,20 @@ public class PlaylistServiceImpl implements IPlaylistService {
             resps.add(byId);
         }
         return resps;
+    }
+
+    @Override
+    public PageBaseResp<Playlist> getFollowPlaylist(PageBaseReq req) {
+        Long uid = RequestHolder.get().getUid();
+        List<Playlist> list = new ArrayList<>();
+        IPage<UserPlaylist> page = userPlaylistDao.lambdaQuery().eq(UserPlaylist::getUserId, uid).page(req.plusPage());
+        for (UserPlaylist userPlaylist : page.getRecords()) {
+            Playlist playlist = playlistDao.getById(userPlaylist.getPlaylistId());
+            if (!Objects.equals(playlist.getPlCreatorId(), uid)) {
+                list.add(playlist);
+            }
+        }
+        return PageBaseResp.init(page, list);
     }
 
     /**

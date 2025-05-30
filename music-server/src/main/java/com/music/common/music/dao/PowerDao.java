@@ -25,13 +25,15 @@ public class PowerDao extends ServiceImpl<PowerMapper, Power> {
      * @return
      */
     public Boolean checkPower(Long uid, Long playlistId, List<Integer> powerType) {
-        Power power = lambdaQuery()
+        List<Power> powerList = lambdaQuery()
                 .eq(Power::getUserId, uid)
                 .eq(Power::getPlaylistId, playlistId)
-                .one();
+                .list();
 
-        return power != null && powerType.contains(power.getPowerType());
+        return powerList.stream()
+                .anyMatch(power -> powerType.contains(power.getPowerType()));
     }
+
 
     /**
      * 校验单个权限类型
