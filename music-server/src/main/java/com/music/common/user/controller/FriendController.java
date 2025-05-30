@@ -6,14 +6,11 @@ import com.music.common.common.domain.vo.resp.ApiResult;
 import com.music.common.common.domain.vo.resp.CursorPageBaseResp;
 import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.common.utils.RequestHolder;
-import com.music.common.user.domain.vo.request.friend.FriendApplyReq;
-import com.music.common.user.domain.vo.request.friend.FriendApproveReq;
-import com.music.common.user.domain.vo.request.friend.FriendCheckReq;
-import com.music.common.user.domain.vo.request.friend.FriendDeleteReq;
-import com.music.common.user.domain.vo.response.friend.FriendApplyResp;
-import com.music.common.user.domain.vo.response.friend.FriendCheckResp;
-import com.music.common.user.domain.vo.response.friend.FriendResp;
-import com.music.common.user.domain.vo.response.friend.FriendUnreadResp;
+import com.music.common.music.dao.PlaylistDao;
+import com.music.common.music.domain.vo.reponse.PlaylistDetailResp;
+import com.music.common.music.service.IPlaylistService;
+import com.music.common.user.domain.vo.request.friend.*;
+import com.music.common.user.domain.vo.response.friend.*;
 import com.music.common.user.service.FriendService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,9 +25,10 @@ import javax.validation.Valid;
 @Api(tags = "好友相关接口")
 @Slf4j
 public class FriendController {
-    //TODO: 1.好友相关接口 2.基于spring的订阅发布模式 3.接通websocket, 收发消息
     @Resource
     private FriendService friendService;
+    @Resource
+    private PlaylistDao playlistDao;
 
     @GetMapping("/check")
     @ApiOperation("批量判断是否是自己好友")
@@ -81,5 +79,14 @@ public class FriendController {
     public ApiResult<CursorPageBaseResp<FriendResp>> friendList(@Valid CursorPageBaseReq request) {
         Long uid = RequestHolder.get().getUid();
         return ApiResult.success(friendService.friendList(uid, request));
+    }
+
+    @GetMapping("/isInRoom/page")
+    @ApiOperation("好友是否已在房间内的列表")
+    public ApiResult<CursorPageBaseResp<InviteFriendResp>> invitedFriendList(@Valid InvitedFriendReq req) {
+        Long uid = RequestHolder.get().getUid();
+        Long roomId = playlistDao.getById(req.getPlaylistId()).getRoomId();
+        req.setRoomId(roomId);
+        return ApiResult.success(friendService.invitedFriendList(uid, req));
     }
 }

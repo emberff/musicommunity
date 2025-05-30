@@ -1,16 +1,19 @@
 package com.music.common.user.service.adapter;
 
 
+import com.music.common.chat.domain.vo.response.ChatMemberListResp;
 import com.music.common.user.domain.entity.User;
 import com.music.common.user.domain.entity.UserApply;
 import com.music.common.user.domain.entity.UserFriend;
 import com.music.common.user.domain.vo.request.friend.FriendApplyReq;
 import com.music.common.user.domain.vo.response.friend.FriendApplyResp;
 import com.music.common.user.domain.vo.response.friend.FriendResp;
+import com.music.common.user.domain.vo.response.friend.InviteFriendResp;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.music.common.user.domain.enums.ApplyReadStatusEnum.UNREAD;
@@ -71,4 +74,34 @@ public class FriendAdapter {
             return resp;
         }).collect(Collectors.toList());
     }
+
+    public static List<InviteFriendResp> buildInvitedFriend(List<UserFriend> list, List<User> userList, List<ChatMemberListResp> memberList) {
+        Map<Long, User> userMap = userList.stream()
+                .collect(Collectors.toMap(User::getId, user -> user));
+
+        // 提取群成员的 uid，用于判断是否已被邀请
+        Set<Long> memberUidSet = memberList.stream()
+                .map(ChatMemberListResp::getUid)
+                .collect(Collectors.toSet());
+
+        return list.stream().map(userFriend -> {
+            InviteFriendResp resp = new InviteFriendResp();
+            Long friendUid = userFriend.getFriendUid();
+            resp.setUid(friendUid);
+
+            // 设置是否已被邀请：在群成员列表中为已邀请（1），否则为未邀请（0）
+            resp.setIsInvited(memberUidSet.contains(friendUid) ? 1 : 0);
+
+            User user = userMap.get(friendUid);
+            if (user != null) {
+                resp.setSign(user.getSign());
+                resp.setActiveStatus(user.getActiveStatus());
+                resp.setName(user.getName());
+                resp.setAvatar(user.getAvatar());
+                resp.setSex(user.getSex());
+            }
+            return resp;
+        }).collect(Collectors.toList());
+    }
+
 }

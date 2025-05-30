@@ -8,10 +8,8 @@ import com.music.common.common.domain.vo.resp.PageBaseResp;
 import com.music.common.user.domain.vo.request.friend.FriendApplyReq;
 import com.music.common.user.domain.vo.request.friend.FriendApproveReq;
 import com.music.common.user.domain.vo.request.friend.FriendCheckReq;
-import com.music.common.user.domain.vo.response.friend.FriendApplyResp;
-import com.music.common.user.domain.vo.response.friend.FriendCheckResp;
-import com.music.common.user.domain.vo.response.friend.FriendResp;
-import com.music.common.user.domain.vo.response.friend.FriendUnreadResp;
+import com.music.common.user.domain.vo.request.friend.InvitedFriendReq;
+import com.music.common.user.domain.vo.response.friend.*;
 
 import java.util.List;
 
@@ -75,4 +73,6 @@ public interface FriendService {
     CursorPageBaseResp<FriendResp> friendList(Long uid, CursorPageBaseReq request);
 
     List<Long> friendUids(Long uid);
+
+    CursorPageBaseResp<InviteFriendResp> invitedFriendList(Long uid, InvitedFriendReq req);
 }

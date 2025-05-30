@@ -3,9 +3,13 @@ package com.music.common.user.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.music.common.chat.dao.RoomFriendDao;
+import com.music.common.chat.dao.RoomGroupDao;
 import com.music.common.chat.domain.entity.RoomFriend;
+import com.music.common.chat.domain.vo.request.ChatMessageMemberReq;
+import com.music.common.chat.domain.vo.response.ChatMemberListResp;
 import com.music.common.chat.service.ChatService;
 import com.music.common.chat.service.ContactService;
+import com.music.common.chat.service.RoomAppService;
 import com.music.common.chat.service.RoomService;
 import com.music.common.chat.service.adapter.MessageAdapter;
 import com.music.common.common.domain.vo.req.CursorPageBaseReq;
@@ -24,10 +28,8 @@ import com.music.common.user.domain.entity.UserFriend;
 import com.music.common.user.domain.vo.request.friend.FriendApplyReq;
 import com.music.common.user.domain.vo.request.friend.FriendApproveReq;
 import com.music.common.user.domain.vo.request.friend.FriendCheckReq;
-import com.music.common.user.domain.vo.response.friend.FriendApplyResp;
-import com.music.common.user.domain.vo.response.friend.FriendCheckResp;
-import com.music.common.user.domain.vo.response.friend.FriendResp;
-import com.music.common.user.domain.vo.response.friend.FriendUnreadResp;
+import com.music.common.user.domain.vo.request.friend.InvitedFriendReq;
+import com.music.common.user.domain.vo.response.friend.*;
 import com.music.common.user.service.FriendService;
 import com.music.common.user.service.adapter.FriendAdapter;
 import lombok.extern.slf4j.Slf4j;
@@ -70,6 +72,8 @@ public class FriendServiceImpl implements FriendService {
     private UserDao userDao;
     @Autowired
     private RoomFriendDao roomFriendDao;
+    @Autowired
+    private RoomAppService roomAppService;
 
     /**
      * 检查
@@ -227,6 +231,29 @@ public class FriendServiceImpl implements FriendService {
     public List<Long> friendUids(Long uid) {
         return userFriendDao.getFriendUids(uid);
     }
+
+    @Override
+    public CursorPageBaseResp<InviteFriendResp> invitedFriendList(Long uid, InvitedFriendReq req) {
+        ChatMessageMemberReq chatMessageMemberReq = new ChatMessageMemberReq();
+        chatMessageMemberReq.setRoomId(req.getRoomId());
+        List<ChatMemberListResp> memberList = roomAppService.getMemberList(chatMessageMemberReq);
+
+        CursorPageBaseResp<UserFriend> friendPage = userFriendDao.getFriendPage(uid, req);
+        if (CollectionUtils.isEmpty(friendPage.getList())) {
+            return CursorPageBaseResp.empty();
+        }
+
+        List<Long> friendUids = friendPage.getList()
+                .stream().map(UserFriend::getFriendUid)
+                .collect(Collectors.toList());
+        List<User> userList = userDao.getFriendList(friendUids);
+
+        return CursorPageBaseResp.init(
+                friendPage,
+                FriendAdapter.buildInvitedFriend(friendPage.getList(), userList, memberList)
+        );
+    }
+
 
     private void createFriend(Long uid, Long targetUid) {
         UserFriend userFriend1 = new UserFriend();

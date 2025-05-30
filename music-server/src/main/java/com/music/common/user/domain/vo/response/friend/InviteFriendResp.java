@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 
 /**
  * Description: 好友校验
@@ -13,7 +15,6 @@ import lombok.NoArgsConstructor;
  * Date: 2023-03-23
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class InviteFriendResp extends FriendResp{
