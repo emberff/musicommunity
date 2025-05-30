@@ -162,7 +162,7 @@ public class UserService implements IUserService {
         if (req.getAvatar() != null) {
             user.setAvatar(req.getAvatar());
         }
-        userDao.save(user);
+        userDao.updateById(user);
         return true;
     }
 

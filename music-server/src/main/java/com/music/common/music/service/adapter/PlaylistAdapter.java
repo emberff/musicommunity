@@ -16,7 +16,11 @@ public class PlaylistAdapter {
 
     public static Playlist buildPlaylist(PlaylistUpdateReq updateReq) {
         Playlist playlist = new Playlist();
-        BeanUtil.copyProperties(updateReq, playlist);
+//        BeanUtil.copyProperties(updateReq, playlist);
+        playlist.setId(updateReq.getId());
+        playlist.setName(updateReq.getName());
+        playlist.setCover(updateReq.getCover());
+        playlist.setIsPublic(updateReq.getIsPublic());
         return playlist;
     }
 

@@ -30,6 +30,11 @@ public class PowerDao extends ServiceImpl<PowerMapper, Power> {
                 .eq(Power::getPlaylistId, playlistId)
                 .list();
 
+        System.out.println("查询到的权限记录: " + powerList);
+        for (Power power : powerList) {
+            System.out.println("powerType: " + power.getPowerType() + ", 是否匹配: " + powerType.contains(power.getPowerType()));
+        }
+
         return powerList.stream()
                 .anyMatch(power -> powerType.contains(power.getPowerType()));
     }

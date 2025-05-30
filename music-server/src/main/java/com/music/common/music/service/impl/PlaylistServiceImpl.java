@@ -96,8 +96,8 @@ public class PlaylistServiceImpl implements IPlaylistService {
     @Override
     public void updatePlaylist(PlaylistUpdateReq req) {
         Playlist playlist = playlistDao.getById(req.getId());
-        AssertUtil.isEmpty(playlist, "未查询到歌单信息!");
-        AssertUtil.isTrue(validateMngPower(RequestHolder.get().getUid(), req.getId()), "无修改权限!");
+        AssertUtil.isNotEmpty(playlist, "未查询到歌单信息!");
+        AssertUtil.isTrue(validateMngPower(req.getId(), RequestHolder.get().getUid()), "无修改权限!");
         playlistDao.updateById(PlaylistAdapter.buildPlaylist(req));
     }
 
