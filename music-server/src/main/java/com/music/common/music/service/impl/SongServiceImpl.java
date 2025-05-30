@@ -106,6 +106,7 @@ public class SongServiceImpl implements ISongService {
         song.setName(req.getName());
         song.setUrl(req.getUrl());
         song.setSingerId(one.getId());
+        song.setCover(req.getCover());
         song.setType(SongTypeEnum.UPLOAD.getValue());
         songDao.save(song);
 

@@ -30,6 +30,10 @@ public class SongAddReq {
     @ApiModelProperty(value = "歌曲类型, 0用户上传 1jamendoApi", required = true)
     private Integer type;
 
+    @NotBlank
+    @ApiModelProperty(value = "封面url")
+    private String cover;
+
     @ApiModelProperty(value = "文件url", required = true)
     private String url;
 }

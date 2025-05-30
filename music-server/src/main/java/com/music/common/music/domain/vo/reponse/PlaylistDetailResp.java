@@ -30,6 +30,9 @@ public class PlaylistDetailResp {
     @ApiModelProperty(value = "是否公开 0否 1是")
     private Integer isPublic;
 
+    @ApiModelProperty(value = "聊天室id")
+    private Long roomId;
+
     @ApiModelProperty(value = "歌单歌曲数")
     private Integer plSongNum;
 

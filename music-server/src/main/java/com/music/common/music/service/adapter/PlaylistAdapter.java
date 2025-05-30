@@ -33,6 +33,7 @@ public class PlaylistAdapter {
         playlistDetailResp.setSongs(simpleSongList);
         playlistDetailResp.setIsFollowed(isFollowed);
         playlistDetailResp.setCreatorId(playlist.getPlCreatorId());
+        playlistDetailResp.setRoomId(playlist.getRoomId());
         return playlistDetailResp;
     }
 }
