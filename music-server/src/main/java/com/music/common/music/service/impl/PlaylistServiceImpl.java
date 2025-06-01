@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.music.common.chat.domain.vo.request.GroupAddReq;
 import com.music.common.chat.domain.vo.request.member.MemberAddReq;
 import com.music.common.chat.service.RoomAppService;
+import com.music.common.common.domain.enums.NormalOrNoEnum;
 import com.music.common.common.domain.vo.req.IdListReqVO;
 import com.music.common.common.domain.vo.req.IdReqVO;
 import com.music.common.common.domain.vo.req.PageBaseReq;
@@ -166,7 +167,10 @@ public class PlaylistServiceImpl implements IPlaylistService {
             Playlist playlist = playlistDao.getById(record.getPlaylistId());
             BeanUtil.copyProperties(playlist, resp);
             resp.setPlSongNum(playlistSongDao.getExistingSongIds(playlist.getId()).size());
-            pageResp.add(resp);
+            if (playlist.getStatus() == NormalOrNoEnum.NORMAL.getStatus()){
+                pageResp.add(resp);
+            }
+
         }
 
         return PageBaseResp.init(playlistIPage, pageResp);
