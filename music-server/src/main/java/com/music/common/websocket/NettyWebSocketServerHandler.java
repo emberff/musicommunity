@@ -41,6 +41,25 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
         super.exceptionCaught(ctx, cause);
     }
 
+//    @Override
+//    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+//        //握手完成
+//        if (evt instanceof WebSocketServerProtocolHandler.HandshakeComplete) {
+//            String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
+//            if (StrUtil.isNotBlank(token)) {
+//                webSocketService.authorize(ctx.channel(), token);
+//
+//            }
+//        //读空闲
+//        } else if (evt instanceof IdleStateEvent) {
+//            IdleStateEvent event = (IdleStateEvent)evt;
+//            if (event.state() == IdleState.READER_IDLE) {
+//                System.out.println("读空闲");
+//                userOffline(ctx.channel());
+//            }
+//        }
+//    }
+
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         //握手完成
@@ -48,14 +67,6 @@ public class NettyWebSocketServerHandler extends SimpleChannelInboundHandler<Tex
             String token = NettyUtil.getAttr(ctx.channel(), NettyUtil.TOKEN);
             if (StrUtil.isNotBlank(token)) {
                 webSocketService.authorize(ctx.channel(), token);
-
-            }
-        //读空闲
-        } else if (evt instanceof IdleStateEvent) {
-            IdleStateEvent event = (IdleStateEvent)evt;
-            if (event.state() == IdleState.READER_IDLE) {
-                System.out.println("读空闲");
-                userOffline(ctx.channel());
             }
         }
     }

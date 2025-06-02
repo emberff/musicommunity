@@ -41,16 +41,14 @@ public class UserOnlineListener {
 
     @Async
     @EventListener(classes = UserOnlineEvent.class)
-    public void saveRedisAndPush(UserOnlineEvent event) {
+    public void Push(UserOnlineEvent event) {
         User user = event.getUser();
         userCache.online(user.getId(), user.getLastOptTime());
-        //推送给所有在线用户，该用户登录成功 => 暂改为推送给好友
-//        webSocketService.sendToAllOnline(wsAdapter.buildOnlineNotifyResp(event.getUser()));
+        //向好友推送上线消息
         List<Long> uids = friendService.friendUids(user.getId());
         uids.forEach(uid -> {
             webSocketService.sendToUid(wsAdapter.buildOnlineNotifyResp(event.getUser()), uid);
         });
-//        pushService.sendPushMsg(wsAdapter.buildOnlineNotifyResp(event.getUser()));
     }
 
     @Async

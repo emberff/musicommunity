@@ -100,10 +100,12 @@ public class ChatServiceImpl implements ChatService {
     @Override
     @Transactional
     public Long sendMsg(ChatMessageReq request, Long uid) {
+        // 校验能否发送消息, 如果被好友删除或被移除群聊则不可发送
         check(request, uid);
+        // 依据消息的类型获取处理类, 消息类型不同保存消息时需要保存的内容也不同
         AbstractMsgHandler<?> msgHandler = MsgHandlerFactory.getStrategyNoNull(request.getMsgType());
         Long msgId = msgHandler.checkAndSaveMsg(request, uid);
-        //发布消息发送事件
+        // 发布消息发送事件
         applicationEventPublisher.publishEvent(new MessageSendEvent(this, msgId));
         return msgId;
     }
@@ -121,7 +123,7 @@ public class ChatServiceImpl implements ChatService {
         if (room.isRoomGroup()) {
             RoomGroup roomGroup = roomGroupDao.getByRoomId(request.getRoomId());
             GroupMember member = groupMemberDao.getMember(roomGroup.getId(), uid);
-//            AssertUtil.isNotEmpty(member, "您已经被移除该群");
+            AssertUtil.isNotEmpty(member, "您已经被移除该群");
         }
 
     }

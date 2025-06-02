@@ -95,14 +95,29 @@ public class WebSocketServiceImpl implements WebSocketService {
         }
     }
 
+//    /**
+//     * (channel在本地)登录成功，并更新状态
+//     */
+//    private void loginSuccess(Channel channel, User user, String token) {
+//        //更新上线列表
+//        online(channel, user.getId());
+//        //返回给用户登录成功
+////        boolean hasPower = iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
+//        // 保存channel的对应uid
+//        WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
+//        wsChannelExtraDTO.setUid(user.getId());
+//        // 推送成功消息
+//        sendMsg(channel, WebSocketAdapter.buildResp(user, token));
+//        // 用户上线的事件
+//        user.setLastOptTime(new Date());
+//        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
+//        applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
+//    }
+
     /**
      * (channel在本地)登录成功，并更新状态
      */
     private void loginSuccess(Channel channel, User user, String token) {
-        //更新上线列表
-        online(channel, user.getId());
-        //返回给用户登录成功
-//        boolean hasPower = iRoleService.hasPower(user.getId(), RoleEnum.CHAT_MANAGER);
         // 保存channel的对应uid
         WSChannelExtraDTO wsChannelExtraDTO = ONLINE_WS_MAP.get(channel);
         wsChannelExtraDTO.setUid(user.getId());
@@ -110,7 +125,6 @@ public class WebSocketServiceImpl implements WebSocketService {
         sendMsg(channel, WebSocketAdapter.buildResp(user, token));
         // 用户上线的事件
         user.setLastOptTime(new Date());
-        user.refreshIp(NettyUtil.getAttr(channel, NettyUtil.IP));
         applicationEventPublisher.publishEvent(new UserOnlineEvent(this, user));
     }
 

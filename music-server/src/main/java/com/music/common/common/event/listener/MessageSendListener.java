@@ -67,33 +67,63 @@ public class MessageSendListener {
                 userDao.getById(message.getFromUid()).getAvatar()
         );
 
-
-        // 所有房间更新房间最新消息
+        // 更新房间最新消息
         roomDao.refreshActiveTime(room.getId(), message.getId(), message.getCreateTime());
 
-        if (room.isHotRoom()) { // 热门群聊推送所有在线的人
-            roomDao.refreshActiveTime(room.getId(), message.getId(), message.getCreateTime());
-            // 直接调用 WebSocket 推送给所有在线用户
-            webSocketService.sendToAllOnline(WSAdapter.buildMsgSend(msgResp), null);
-        } else {
-            List<Long> memberUidList = new ArrayList<>();
-            if (Objects.equals(room.getType(), RoomTypeEnum.GROUP.getType())) { // 普通群聊
-                RoomGroup roomGroup = roomGroupDao.getByRoomId(message.getRoomId());
-                memberUidList = groupMemberDao.getMemberUidList(roomGroup.getId());
-            } else if (Objects.equals(room.getType(), RoomTypeEnum.FRIEND.getType())) { // 单聊
-                RoomFriend roomFriend = roomFriendDao.getByRoomId(room.getId());
-                memberUidList = Arrays.asList(roomFriend.getUid1(), roomFriend.getUid2());
-            }
-
-            // 更新所有群成员的会话时间
-            contactDao.refreshOrCreateActiveTime(room.getId(), memberUidList, message.getId(), message.getCreateTime());
-
-            // 直接推送给房间成员
-            memberUidList.forEach(uid -> {
-                webSocketService.sendToUid(WSAdapter.buildMsgSend(msgResp), uid);
-            });
+        List<Long> memberUidList = new ArrayList<>();
+        if (Objects.equals(room.getType(), RoomTypeEnum.GROUP.getType())) { // 群聊
+            RoomGroup roomGroup = roomGroupDao.getByRoomId(message.getRoomId());
+            memberUidList = groupMemberDao.getMemberUidList(roomGroup.getId());
+        } else if (Objects.equals(room.getType(), RoomTypeEnum.FRIEND.getType())) { // 私聊
+            RoomFriend roomFriend = roomFriendDao.getByRoomId(room.getId());
+            memberUidList = Arrays.asList(roomFriend.getUid1(), roomFriend.getUid2());
         }
+        // 更新房间内所有用户的会话时间
+        contactDao.refreshOrCreateActiveTime(room.getId(), memberUidList, message.getId(), message.getCreateTime());
+
+        memberUidList.forEach(uid -> {
+            webSocketService.sendToUid(WSAdapter.buildMsgSend(msgResp), uid);
+        });
     }
+
+//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes = MessageSendEvent.class, fallbackExecution = true)
+//    public void messageRoute(MessageSendEvent event) {
+//        Long msgId = event.getMsgId();
+//        Message message = messageDao.getById(msgId);
+//        Room room = roomDao.getById(message.getRoomId());
+//        ChatMessageResp msgResp = chatService.getMsgResp(message, null);
+//
+//        msgResp.getFromUser().setFromUserAvatar(
+//                userDao.getById(message.getFromUid()).getAvatar()
+//        );
+//
+//
+//        // 房间更新房间最新消息
+//        roomDao.refreshActiveTime(room.getId(), message.getId(), message.getCreateTime());
+//
+//        if (room.isHotRoom()) { // 热门群聊推送所有在线的人
+//            roomDao.refreshActiveTime(room.getId(), message.getId(), message.getCreateTime());
+//            // 直接调用 WebSocket 推送给所有在线用户
+//            webSocketService.sendToAllOnline(WSAdapter.buildMsgSend(msgResp), null);
+//        } else {
+//            List<Long> memberUidList = new ArrayList<>();
+//            if (Objects.equals(room.getType(), RoomTypeEnum.GROUP.getType())) { // 普通群聊
+//                RoomGroup roomGroup = roomGroupDao.getByRoomId(message.getRoomId());
+//                memberUidList = groupMemberDao.getMemberUidList(roomGroup.getId());
+//            } else if (Objects.equals(room.getType(), RoomTypeEnum.FRIEND.getType())) { // 单聊
+//                RoomFriend roomFriend = roomFriendDao.getByRoomId(room.getId());
+//                memberUidList = Arrays.asList(roomFriend.getUid1(), roomFriend.getUid2());
+//            }
+//
+//            // 更新所有群成员的会话时间
+//            contactDao.refreshOrCreateActiveTime(room.getId(), memberUidList, message.getId(), message.getCreateTime());
+//
+//            // 直接推送给房间成员
+//            memberUidList.forEach(uid -> {
+//                webSocketService.sendToUid(WSAdapter.buildMsgSend(msgResp), uid);
+//            });
+//        }
+//    }
 
 
 //    @TransactionalEventListener(classes = MessageSendEvent.class, fallbackExecution = true)
